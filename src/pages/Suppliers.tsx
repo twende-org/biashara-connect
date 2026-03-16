@@ -98,6 +98,7 @@ export default function Suppliers() {
           <h1 className="page-title">Wasambazaji</h1>
           <p className="page-description">Simamia wasambazaji wako</p>
         </div>
+        {permissions.canAddSupplier && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingSup(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />Ongeza Msambazaji</Button>

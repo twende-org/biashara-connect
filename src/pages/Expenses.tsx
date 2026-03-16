@@ -248,8 +248,12 @@ export default function Expenses() {
                   <td className="py-3 text-muted-foreground">{e.date}</td>
                   <td className="py-3">
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEdit(e)} className="rounded p-1 hover:bg-muted"><Edit2 className="h-4 w-4 text-muted-foreground" /></button>
-                      <button onClick={() => handleDelete(e.id)} className="rounded p-1 hover:bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></button>
+                      {permissions.canEditExpense && (
+                        <button onClick={() => openEdit(e)} className="rounded p-1 hover:bg-muted"><Edit2 className="h-4 w-4 text-muted-foreground" /></button>
+                      )}
+                      {permissions.canDeleteExpense && (
+                        <button onClick={() => handleDelete(e.id)} className="rounded p-1 hover:bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></button>
+                      )}
                     </div>
                   </td>
                 </tr>
