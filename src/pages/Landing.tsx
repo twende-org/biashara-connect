@@ -98,9 +98,9 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Mfumo wa Kusimamia Biashara Yako - Duka POS System"
-        description="DukaSmart ni mfumo bora wa kusimamia duka lako. Simamia bidhaa, mauzo, stoo, matumizi, wasambazaji na wafanyakazi kwa urahisi. Best duka POS system by TwendeDigital."
-        keywords="duka, dukasmart, duka smart, duksmart, twendedigital, twende digital, duka pos system, pos tanzania, shop management, mfumo wa duka, biashara software, inventory management, mauzo, stoo, point of sale, smart shop management"
+        title="Simamia & Tangaza Biashara Yako Mtandaoni — DukaSmart"
+        description="DukaSmart ni mfumo kamili wa kusimamia duka lako na kulitangaza mtandaoni. Simamia bidhaa, mauzo, stoo na wafanyakazi — huku wateja wakikupata na kupata bidhaa zako moja kwa moja."
+        keywords="duka, dukasmart, duka smart, twendedigital, duka pos system, pos tanzania, shop management, mfumo wa duka, biashara software, inventory management, mauzo, stoo, tangaza duka, tafuta bidhaa, maduka mtandaoni"
         canonical="/"
       />
       {/* Navbar */}
