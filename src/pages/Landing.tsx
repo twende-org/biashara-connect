@@ -27,9 +27,9 @@ const features = [
 
 const steps = [
   { step: "01", title: "Jisajili Bure", desc: "Fungua akaunti kwa dakika chache tu kwa barua pepe na nywila." },
-  { step: "02", title: "Ongeza Duka Lako", desc: "Weka maelezo ya duka lako — jina, eneo na maelezo mengine." },
-  { step: "03", title: "Ongeza Bidhaa", desc: "Ingiza bidhaa zako na maelezo kamili: bei, stoo, kategoria, na zaidi." },
-  { step: "04", title: "Anza Kuuza!", desc: "Rekodi mauzo, fuatilia faida, na simamia biashara yako kwa ufanisi." },
+  { step: "02", title: "Ongeza Duka Lako", desc: "Weka maelezo ya duka lako — jina, eneo, picha — na litangazwe mtandaoni mara moja." },
+  { step: "03", title: "Ongeza Bidhaa", desc: "Ingiza bidhaa zako na maelezo kamili. Wateja wataziona moja kwa moja kwenye duka lako la mtandaoni." },
+  { step: "04", title: "Simamia & Tangaza!", desc: "Rekodi mauzo, fuatilia faida, na duka lako linaendelea kuvutia wateja wapya mtandaoni." },
 ];
 
 const plans = [
