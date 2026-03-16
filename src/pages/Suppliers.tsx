@@ -141,6 +141,7 @@ export default function Suppliers() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       <div className="relative mb-6 max-w-sm">
