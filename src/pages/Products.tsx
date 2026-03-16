@@ -16,6 +16,7 @@ import { formatTZS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,
