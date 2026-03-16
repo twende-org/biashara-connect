@@ -12,9 +12,15 @@ import {
   setDoc,
   runTransaction,
   increment,
+  type Firestore,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import type { Shop, Product, Sale, Supplier, Expense, DailySalesSummary } from "@/types";
+
+function getDb(): Firestore {
+  if (!db) throw new Error("Firebase haijasanidiwa. Tafadhali weka Firebase environment variables.");
+  return db;
+}
 
 // ---- Users / Profiles ----
 export async function createUserProfile(uid: string, data: { email: string; displayName: string }) {
