@@ -94,7 +94,16 @@ export default function Products() {
     setSubmitting(true);
     setProgress(30);
     try {
-      const data = { ...form };
+      // Remove empty optional fields before saving
+      const raw = { ...form };
+      const data = Object.fromEntries(
+        Object.entries(raw).filter(([_, v]) => v !== "" && v !== 0 && v !== undefined)
+      ) as typeof raw;
+      // Always keep required numeric fields
+      data.buyingPrice = raw.buyingPrice;
+      data.sellingPrice = raw.sellingPrice;
+      data.stock = raw.stock;
+      data.minStock = raw.minStock;
       setProgress(60);
       if (editingProduct) {
         await dispatch(editProduct({ id: editingProduct.id, data })).unwrap();
