@@ -26,6 +26,7 @@ const initialState: AuthState = {
 export const registerUser = createAsyncThunk(
   "auth/register",
   async ({ email, password, displayName }: { email: string; password: string; displayName: string }) => {
+    if (!auth) throw new Error("Firebase haijasanidiwa");
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await createUserProfile(cred.user.uid, { email, displayName });
     const profile = { id: cred.user.uid, email, displayName } as UserProfile;
