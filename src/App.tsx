@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 
 import AuthGuard from "@/components/AuthGuard";
 import AppLayout from "@/components/layout/AppLayout";
+import RoleGuard from "@/components/RoleGuard";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 
 // Public pages
