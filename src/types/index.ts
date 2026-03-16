@@ -48,6 +48,9 @@ export interface Sale {
   customerName?: string;
   customerPhone?: string;
   notes?: string;
+  status?: "completed" | "draft";
+  createdBy?: string;
+  createdByName?: string;
 }
 
 /** Daily summary stored at shops/{shopId}/sales_days/{YYYY-MM-DD} */

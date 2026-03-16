@@ -39,6 +39,9 @@ export interface RolePermissions {
   // Sales
   canAddSale: boolean;
   canDeleteSale: boolean;
+  canConfirmDraft: boolean;
+  canEditDraft: boolean;
+  canDeleteDraft: boolean;
   // Expenses
   canAddExpense: boolean;
   canEditExpense: boolean;
