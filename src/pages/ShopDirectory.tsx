@@ -6,12 +6,11 @@ import {
   MapPin,
   Phone,
   Package,
-  Filter,
   X,
   ArrowRight,
   SlidersHorizontal,
   Menu,
-  ChevronDown,
+  Navigation,
 } from "lucide-react";
 import { BsShop } from "react-icons/bs";
 import { Mail } from "lucide-react";
