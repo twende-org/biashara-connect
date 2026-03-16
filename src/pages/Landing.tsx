@@ -83,9 +83,10 @@ const plans = [
 const faqs = [
   {
     q: "Je, DukaSmart ni bure?",
-    a: "Hapana, lakini tuna mpango wa Ndogo unaofaa maduka madogo madogo. Mpango huu unakuruhusu kusimamia duka 1 na bidhaa hadi 50 kwa Tsh 9,900/mwezi. Unaweza kuboresha mpango wakati wowote ili kupata vipengele zaidi."
+    a: "Hapana, lakini tuna mpango wa Ndogo unaofaa maduka madogo madogo. Mpango huu unakuruhusu kusimamia duka 1 na bidhaa hadi 50 kwa Tsh 9,900/mwezi. Unaweza kuboresha mpango wakati wowote."
   },
-  { q: "Je, data yangu ni salama?", a: "Kabisa. Tunatumia Firebase na encryption ya hali ya juu kulinda data yako. Hatushiriki data yako na mtu yeyote." },
+  { q: "Je, wateja wanaweza kuona duka langu?", a: "Ndiyo! Ukishasajili duka lako na kuongeza bidhaa, duka lako litaonekana kwenye sehemu ya Maduka ambapo wateja wanaweza kutafuta na kupata bidhaa zako." },
+  { q: "Je, data yangu ni salama?", a: "Kabisa. Tunatumia teknolojia za kisasa za usalama kulinda data yako. Hatushiriki data yako na mtu yeyote." },
   { q: "Je, ninaweza kutumia simu yangu?", a: "Ndiyo, DukaSmart imejengwa kufanya kazi vizuri kwenye simu, tablet na kompyuta." },
   { q: "Je, ninaweza kuongeza wafanyakazi?", a: "Ndiyo! Unaweza kuwapa majukumu tofauti — mmiliki, meneja, au mhudumu — kila mmoja na ruhusa zake." },
 ];
