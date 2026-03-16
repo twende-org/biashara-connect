@@ -49,9 +49,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
   const { shops, currentShopId } = useAppSelector((s) => s.shops);
+  const { role, permissions } = useUserRole();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+
+  // Filter nav items based on role
+  const navItems = useMemo(() => {
+    if (!role) return allNavItems.filter((i) => i.path === "/app");
+    const allowed = roleNavAccess[role];
+    return allNavItems.filter((i) => allowed.includes(i.path));
+  }, [role]);
 
   const currentShop = shops.find((s) => s.id === currentShopId);
 
