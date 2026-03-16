@@ -26,6 +26,7 @@ const emptyForm = { category: "", description: "", amount: 0, date: new Date().t
 export default function Expenses() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const { permissions } = useUserRole();
   const { expenses, loading } = useAppSelector((s) => s.expenses);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
