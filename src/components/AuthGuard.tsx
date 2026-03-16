@@ -18,10 +18,15 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
   const loadingRef = useRef(false);
 
   useEffect(() => {
+    if (!auth) {
+      // Firebase not configured — show fallback immediately
+      setAuthReady(true);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
 
-      // If a user exists and profile not loaded, fetch it
       if (fbUser && !store.getState().auth.user && !loadingRef.current) {
         loadingRef.current = true;
         try {
@@ -38,7 +43,6 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
     return () => unsubscribe();
   }, [dispatch]);
 
-  // Loading screen while Firebase or store user is not ready
   if (!authReady) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -50,7 +54,6 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
     );
   }
 
-  // Wait for profile to finish loading if Firebase user exists
   if (firebaseUser && !user && loadingRef.current) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -62,6 +65,5 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
     );
   }
 
-  // Render children if authenticated, otherwise fallback
   return user ? <>{children}</> : <>{fallback}</>;
 }
