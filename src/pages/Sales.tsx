@@ -141,14 +141,36 @@ export default function Sales() {
 
         setProgress(10 + Math.round(((i + 1) / totalItems) * 70));
 
-        await dispatch(editProduct({
-          id: item.product.id,
-          data: { stock: item.product.stock - item.quantity },
-        })).unwrap();
+        // Stock update — only send stock field (attendant-safe)
+        try {
+          await dispatch(editProduct({
+            id: item.product.id,
+            data: { stock: item.product.stock - item.quantity },
+          })).unwrap();
+        } catch (stockErr: any) {
+          console.error("Stock update failed for", item.product.name, stockErr);
+          toast.error(`Stoo ya ${item.product.name} haijasasishwa: ${stockErr?.message || "Ruhusa imezuiwa"}`);
+        }
+
+        // Log activity
+        logActivity({
+          action: "sale_created",
+          category: "sale",
+          details: `Ameuzwa ${item.product.name} x${item.quantity} kwa ${formatTZS(item.lineTotal)}`,
+          metadata: {
+            productId: item.product.id,
+            productName: item.product.name,
+            quantity: item.quantity,
+            totalPrice: item.lineTotal,
+            paymentMethod,
+          },
+        });
       }
 
       setProgress(100);
       toast.success(`Mauzo ${totalItems} yamerekodiwa!`);
+      // Re-fetch products to sync stock
+      dispatch(fetchProducts(currentShopId));
       setTimeout(() => {
         setDialogOpen(false);
         resetForm();
