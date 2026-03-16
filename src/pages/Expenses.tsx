@@ -170,6 +170,7 @@ export default function Expenses() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Filters */}
