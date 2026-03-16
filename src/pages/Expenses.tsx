@@ -14,6 +14,7 @@ import { fetchExpenses, createExpense, editExpense, removeExpense } from "@/stor
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useActivityLogger } from "@/hooks/useActivityLogger";
 
 const EXPENSE_CATEGORIES = [
   "Kodi ya Duka", "Umeme", "Maji", "Usafiri", "Mishahara",
