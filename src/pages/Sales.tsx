@@ -292,6 +292,7 @@ export default function Sales() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Filters */}

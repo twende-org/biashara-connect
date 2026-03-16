@@ -108,6 +108,7 @@ export default function Expenses() {
           <h1 className="page-title">Matumizi</h1>
           <p className="page-description">Rekodi na fuatilia matumizi ya biashara</p>
         </div>
+        {permissions.canAddExpense && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setForm(emptyForm); setEditId(null); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button disabled={!currentShopId}><Plus className="h-4 w-4 mr-2" />Matumizi Mapya</Button>
