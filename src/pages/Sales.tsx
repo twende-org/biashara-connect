@@ -16,6 +16,7 @@ import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useActivityLogger } from "@/hooks/useActivityLogger";
 
 interface CartItem {
   product: Product;
