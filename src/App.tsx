@@ -23,6 +23,10 @@ import DukaPosSystem from "@/pages/seo/DukaPosSystem";
 import TwendeDigital from "@/pages/seo/TwendeDigital";
 import DukSmart from "@/pages/seo/DukSmart";
 
+// Public pages (lazy)
+const ShopDirectory = lazy(() => import("@/pages/ShopDirectory"));
+const ShopDetail = lazy(() => import("@/pages/ShopDetail"));
+
 // Lazy-loaded protected pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Shops = lazy(() => import("@/pages/Shops"));
@@ -69,6 +73,10 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+
+              {/* Public shop directory */}
+              <Route path="/maduka" element={<ShopDirectory />} />
+              <Route path="/maduka/:shopId" element={<ShopDetail />} />
 
               {/* SEO landing pages */}
               <Route path="/duka-pos-system" element={<DukaPosSystem />} />
