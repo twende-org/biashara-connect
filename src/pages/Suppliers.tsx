@@ -163,12 +163,16 @@ export default function Suppliers() {
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-foreground">{s.name}</h3>
                 <div className="flex gap-1">
-                  <button onClick={() => handleEdit(s)} className="rounded-lg p-1.5 hover:bg-muted transition-colors">
-                    <Edit className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  <button onClick={() => handleDelete(s.id)} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors">
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </button>
+                  {permissions.canEditSupplier && (
+                    <button onClick={() => handleEdit(s)} className="rounded-lg p-1.5 hover:bg-muted transition-colors">
+                      <Edit className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  )}
+                  {permissions.canDeleteSupplier && (
+                    <button onClick={() => handleDelete(s.id)} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="space-y-1">
