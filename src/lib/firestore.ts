@@ -66,10 +66,34 @@ export async function removeUserRole(userId: string, shopId: string) {
 }
 
 // ---- Shops ----
-export async function getShops(ownerId: string) {
-  const q = query(collection(getDb(), "shops"), where("ownerId", "==", ownerId));
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Shop));
+/**
+ * Get all shops the user has access to (owned OR assigned via user_roles).
+ */
+export async function getShops(userId: string) {
+  const database = getDb();
+
+  // 1. Shops the user owns
+  const ownedQ = query(collection(database, "shops"), where("ownerId", "==", userId));
+  const ownedSnap = await getDocs(ownedQ);
+  const shopMap = new Map<string, Shop>();
+  ownedSnap.docs.forEach((d) => shopMap.set(d.id, { id: d.id, ...d.data() } as Shop));
+
+  // 2. Shops the user is assigned to via user_roles
+  const rolesQ = query(collection(database, "user_roles"), where("userId", "==", userId));
+  const rolesSnap = await getDocs(rolesQ);
+  const assignedShopIds = rolesSnap.docs
+    .map((d) => d.data().shopId as string)
+    .filter((id) => !shopMap.has(id));
+
+  // Fetch each assigned shop doc
+  for (const shopId of assignedShopIds) {
+    const shopSnap = await getDoc(doc(database, "shops", shopId));
+    if (shopSnap.exists()) {
+      shopMap.set(shopId, { id: shopId, ...shopSnap.data() } as Shop);
+    }
+  }
+
+  return Array.from(shopMap.values());
 }
 
 export async function addShop(data: Omit<Shop, "id">) {
