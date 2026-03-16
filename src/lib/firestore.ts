@@ -136,7 +136,7 @@ export async function deleteProduct(id: string) {
 // ============================================================
 
 /**
- * Add a sale AND atomically update the daily summary using a Firestore transaction.
+ * Add a sale AND atomically update the daily summary + decrement product stock.
  */
 export async function addSaleWithSummary(
   data: Omit<Sale, "id">,
@@ -146,22 +146,27 @@ export async function addSaleWithSummary(
   const dateStr = data.date; // YYYY-MM-DD
   const dayDocRef = doc(database, "shops", data.shopId, "sales_days", dateStr);
   const salesColRef = collection(dayDocRef, "sales");
-
-  // We need addDoc inside a transaction — use a pre-generated doc ref
   const newSaleRef = doc(salesColRef);
+  const productRef = doc(database, "products", data.productId);
 
   await runTransaction(database, async (tx) => {
-    const daySnap = await tx.get(dayDocRef);
+    // Verify stock
+    const productSnap = await tx.get(productRef);
+    if (!productSnap.exists()) throw new Error("Bidhaa haipatikani");
+    const currentStock = productSnap.data().stock as number;
+    if (currentStock < data.quantity) {
+      throw new Error(`Stoo haitoshi! Iliyobaki: ${currentStock}`);
+    }
 
+    // Update daily summary
+    const daySnap = await tx.get(dayDocRef);
     if (daySnap.exists()) {
-      // Update existing summary
       tx.update(dayDocRef, {
         totalSales: increment(data.totalPrice),
         transactions: increment(1),
         profit: increment(profit),
       });
     } else {
-      // Create new day summary
       tx.set(dayDocRef, {
         date: dateStr,
         totalSales: data.totalPrice,
@@ -170,9 +175,13 @@ export async function addSaleWithSummary(
       });
     }
 
-    // Write the sale document
+    // Decrement stock atomically
+    tx.update(productRef, { stock: increment(-data.quantity) });
+
+    // Write sale document as completed
     tx.set(newSaleRef, {
       ...data,
+      status: "completed",
       createdAt: serverTimestamp(),
     });
   });
@@ -188,6 +197,89 @@ export async function addSale(data: Omit<Sale, "id">): Promise<string> {
     ? (data.totalPrice - data.buyingPrice * data.quantity)
     : Math.round(data.totalPrice * 0.3);
   return addSaleWithSummary(data, profit);
+}
+
+// ---- Draft Sales ----
+
+/** Save a draft sale (no inventory/summary impact) */
+export async function addDraftSale(data: Omit<Sale, "id">): Promise<string> {
+  const database = getDb();
+  const dateStr = data.date;
+  const dayDocRef = doc(database, "shops", data.shopId, "sales_days", dateStr);
+  const salesColRef = collection(dayDocRef, "sales");
+  const ref = await addDoc(salesColRef, {
+    ...data,
+    status: "draft",
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+/** Update a draft sale */
+export async function updateDraftSale(shopId: string, date: string, saleId: string, data: Partial<Sale>): Promise<void> {
+  const database = getDb();
+  const saleRef = doc(database, "shops", shopId, "sales_days", date, "sales", saleId);
+  await updateDoc(saleRef, { ...data, updatedAt: serverTimestamp() });
+}
+
+/** Delete a draft sale */
+export async function deleteDraftSale(shopId: string, date: string, saleId: string): Promise<void> {
+  const database = getDb();
+  const saleRef = doc(database, "shops", shopId, "sales_days", date, "sales", saleId);
+  await deleteDoc(saleRef);
+}
+
+/**
+ * Confirm a draft sale — atomically: mark as completed + update summary + decrement stock
+ */
+export async function confirmDraftSale(
+  shopId: string,
+  date: string,
+  saleId: string,
+  profit: number
+): Promise<void> {
+  const database = getDb();
+  const dayDocRef = doc(database, "shops", shopId, "sales_days", date);
+  const saleRef = doc(dayDocRef, "sales", saleId);
+
+  await runTransaction(database, async (tx) => {
+    const saleSnap = await tx.get(saleRef);
+    if (!saleSnap.exists()) throw new Error("Mauzo haipatikani");
+    const saleData = saleSnap.data();
+    if (saleData.status !== "draft") throw new Error("Mauzo haya si draft");
+
+    // Verify stock
+    const productRef = doc(database, "products", saleData.productId);
+    const productSnap = await tx.get(productRef);
+    if (!productSnap.exists()) throw new Error("Bidhaa haipatikani");
+    const currentStock = productSnap.data().stock as number;
+    if (currentStock < saleData.quantity) {
+      throw new Error(`Stoo haitoshi! Iliyobaki: ${currentStock}`);
+    }
+
+    // Update summary
+    const daySnap = await tx.get(dayDocRef);
+    if (daySnap.exists()) {
+      tx.update(dayDocRef, {
+        totalSales: increment(saleData.totalPrice),
+        transactions: increment(1),
+        profit: increment(profit),
+      });
+    } else {
+      tx.set(dayDocRef, {
+        date,
+        totalSales: saleData.totalPrice,
+        transactions: 1,
+        profit,
+      });
+    }
+
+    // Decrement stock
+    tx.update(productRef, { stock: increment(-saleData.quantity) });
+
+    // Mark sale as completed
+    tx.update(saleRef, { status: "completed", confirmedAt: serverTimestamp() });
+  });
 }
 
 /**

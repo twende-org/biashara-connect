@@ -3,27 +3,30 @@ import * as fs from "@/lib/firestore";
 import type { Sale, DailySalesSummary } from "@/types";
 
 interface SalesState {
-  /** Sales for the currently viewed date */
   sales: Sale[];
-  /** Today's summary (single doc read for dashboard) */
+  draftSales: Sale[];
+  completedSales: Sale[];
   todaySummary: DailySalesSummary | null;
-  /** Summaries for a date range (for charts / reports) */
   rangeSummaries: DailySalesSummary[];
-  /** Currently selected date for viewing sales */
   selectedDate: string;
   loading: boolean;
   summaryLoading: boolean;
+  /** Last completed sale for receipt display */
+  lastCompletedSale: Sale | null;
 }
 
 const today = () => new Date().toISOString().split("T")[0];
 
 const initialState: SalesState = {
   sales: [],
+  draftSales: [],
+  completedSales: [],
   todaySummary: null,
   rangeSummaries: [],
   selectedDate: today(),
   loading: false,
   summaryLoading: false,
+  lastCompletedSale: null,
 };
 
 /** Fetch sales for a specific date */
@@ -35,7 +38,7 @@ export const fetchSalesByDate = createAsyncThunk(
   }
 );
 
-/** Fetch today's sales (convenience) */
+/** Fetch today's sales */
 export const fetchSales = createAsyncThunk(
   "sales/fetch",
   async (shopId: string) => {
@@ -45,7 +48,6 @@ export const fetchSales = createAsyncThunk(
   }
 );
 
-/** Fetch daily summary only (single doc read — for dashboard) */
 export const fetchTodaySummary = createAsyncThunk(
   "sales/fetchTodaySummary",
   async (shopId: string) => {
@@ -54,7 +56,6 @@ export const fetchTodaySummary = createAsyncThunk(
   }
 );
 
-/** Fetch summaries for a date range (for weekly/monthly charts) */
 export const fetchSummariesForRange = createAsyncThunk(
   "sales/fetchSummariesRange",
   async ({ shopId, startDate, endDate }: { shopId: string; startDate: string; endDate: string }) => {
@@ -62,7 +63,6 @@ export const fetchSummariesForRange = createAsyncThunk(
   }
 );
 
-/** Fetch sales for a date range (detailed records) */
 export const fetchSalesForRange = createAsyncThunk(
   "sales/fetchRange",
   async ({ shopId, startDate, endDate }: { shopId: string; startDate: string; endDate: string }) => {
@@ -70,7 +70,7 @@ export const fetchSalesForRange = createAsyncThunk(
   }
 );
 
-/** Create a sale — atomically writes sale + updates daily summary */
+/** Create a completed sale (atomic: sale + summary + stock) */
 export const createSale = createAsyncThunk(
   "sales/create",
   async (data: Omit<Sale, "id"> & { profit?: number }) => {
@@ -80,11 +80,51 @@ export const createSale = createAsyncThunk(
     const { profit: _p, ...saleData } = data;
     const id = await fs.addSaleWithSummary(saleData, profit);
     return {
-      sale: { ...saleData, id } as Sale,
+      sale: { ...saleData, id, status: "completed" as const } as Sale,
       profit,
     };
   }
 );
+
+/** Create a draft sale (no stock/summary impact) */
+export const createDraftSale = createAsyncThunk(
+  "sales/createDraft",
+  async (data: Omit<Sale, "id">) => {
+    const id = await fs.addDraftSale(data);
+    return { ...data, id, status: "draft" as const } as Sale;
+  }
+);
+
+/** Confirm a draft sale (atomic: mark completed + stock + summary) */
+export const confirmDraft = createAsyncThunk(
+  "sales/confirmDraft",
+  async ({ sale }: { sale: Sale }) => {
+    const profit = sale.buyingPrice
+      ? (sale.totalPrice - sale.buyingPrice * sale.quantity)
+      : Math.round(sale.totalPrice * 0.3);
+    await fs.confirmDraftSale(sale.shopId, sale.date, sale.id, profit);
+    return { sale: { ...sale, status: "completed" as const }, profit };
+  }
+);
+
+/** Delete a draft sale */
+export const deleteDraft = createAsyncThunk(
+  "sales/deleteDraft",
+  async ({ shopId, date, saleId }: { shopId: string; date: string; saleId: string }) => {
+    await fs.deleteDraftSale(shopId, date, saleId);
+    return saleId;
+  }
+);
+
+function splitSales(sales: Sale[]) {
+  const drafts: Sale[] = [];
+  const completed: Sale[] = [];
+  for (const s of sales) {
+    if (s.status === "draft") drafts.push(s);
+    else completed.push(s);
+  }
+  return { drafts, completed };
+}
 
 const salesSlice = createSlice({
   name: "sales",
@@ -93,6 +133,9 @@ const salesSlice = createSlice({
     setSelectedDate(state, action) {
       state.selectedDate = action.payload;
     },
+    clearLastCompletedSale(state) {
+      state.lastCompletedSale = null;
+    },
   },
   extraReducers: (builder) => {
     // fetchSales & fetchSalesByDate
@@ -100,20 +143,23 @@ const salesSlice = createSlice({
     builder.addCase(fetchSales.fulfilled, (s, a) => {
       s.loading = false;
       s.sales = a.payload.sales;
+      const { drafts, completed } = splitSales(a.payload.sales);
+      s.draftSales = drafts;
+      s.completedSales = completed;
       s.selectedDate = a.payload.date;
     });
-    builder.addCase(fetchSales.rejected, (s) => {
-      s.loading = false;
-    });
+    builder.addCase(fetchSales.rejected, (s) => { s.loading = false; });
+
     builder.addCase(fetchSalesByDate.pending, (s) => { s.loading = true; });
     builder.addCase(fetchSalesByDate.fulfilled, (s, a) => {
       s.loading = false;
       s.sales = a.payload.sales;
+      const { drafts, completed } = splitSales(a.payload.sales);
+      s.draftSales = drafts;
+      s.completedSales = completed;
       s.selectedDate = a.payload.date;
     });
-    builder.addCase(fetchSalesByDate.rejected, (s) => {
-      s.loading = false;
-    });
+    builder.addCase(fetchSalesByDate.rejected, (s) => { s.loading = false; });
 
     // Today summary
     builder.addCase(fetchTodaySummary.pending, (s) => { s.summaryLoading = true; });
@@ -121,9 +167,7 @@ const salesSlice = createSlice({
       s.summaryLoading = false;
       s.todaySummary = a.payload;
     });
-    builder.addCase(fetchTodaySummary.rejected, (s) => {
-      s.summaryLoading = false;
-    });
+    builder.addCase(fetchTodaySummary.rejected, (s) => { s.summaryLoading = false; });
 
     // Range summaries
     builder.addCase(fetchSummariesForRange.fulfilled, (s, a) => {
@@ -135,15 +179,17 @@ const salesSlice = createSlice({
     builder.addCase(fetchSalesForRange.fulfilled, (s, a) => {
       s.loading = false;
       s.sales = a.payload;
+      const { drafts, completed } = splitSales(a.payload);
+      s.draftSales = drafts;
+      s.completedSales = completed;
     });
-    builder.addCase(fetchSalesForRange.rejected, (s) => {
-      s.loading = false;
-    });
+    builder.addCase(fetchSalesForRange.rejected, (s) => { s.loading = false; });
 
-    // createSale — optimistically add to list and update local summary
+    // createSale — add to completed + update summary
     builder.addCase(createSale.fulfilled, (s, a) => {
       s.sales.unshift(a.payload.sale);
-      // Update local today summary
+      s.completedSales.unshift(a.payload.sale);
+      s.lastCompletedSale = a.payload.sale;
       if (s.todaySummary) {
         s.todaySummary.totalSales += a.payload.sale.totalPrice;
         s.todaySummary.transactions += 1;
@@ -157,8 +203,46 @@ const salesSlice = createSlice({
         };
       }
     });
+
+    // createDraftSale
+    builder.addCase(createDraftSale.fulfilled, (s, a) => {
+      s.sales.unshift(a.payload);
+      s.draftSales.unshift(a.payload);
+    });
+
+    // confirmDraft
+    builder.addCase(confirmDraft.fulfilled, (s, a) => {
+      const { sale, profit } = a.payload;
+      // Remove from drafts
+      s.draftSales = s.draftSales.filter(d => d.id !== sale.id);
+      // Add to completed
+      s.completedSales.unshift(sale);
+      s.lastCompletedSale = sale;
+      // Update in sales array
+      const idx = s.sales.findIndex(x => x.id === sale.id);
+      if (idx >= 0) s.sales[idx] = sale;
+      // Update summary
+      if (s.todaySummary) {
+        s.todaySummary.totalSales += sale.totalPrice;
+        s.todaySummary.transactions += 1;
+        s.todaySummary.profit += profit;
+      } else {
+        s.todaySummary = {
+          date: sale.date,
+          totalSales: sale.totalPrice,
+          transactions: 1,
+          profit,
+        };
+      }
+    });
+
+    // deleteDraft
+    builder.addCase(deleteDraft.fulfilled, (s, a) => {
+      s.draftSales = s.draftSales.filter(d => d.id !== a.payload);
+      s.sales = s.sales.filter(x => x.id !== a.payload);
+    });
   },
 });
 
-export const { setSelectedDate } = salesSlice.actions;
+export const { setSelectedDate, clearLastCompletedSale } = salesSlice.actions;
 export default salesSlice.reducer;
