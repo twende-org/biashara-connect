@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2, Package, Eye, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Plus, Search, Edit, Trash2, Package, Eye, ChevronDown, ChevronUp, Loader2, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,8 +47,30 @@ export default function Products() {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [form, setForm] = useState(defaultForm);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Tafadhali chagua picha tu"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Picha isizidi 5MB"); return; }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setImagePreview(dataUrl);
+      setForm((f) => ({ ...f, imageUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setForm((f) => ({ ...f, imageUrl: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   useEffect(() => {
     if (currentShopId) dispatch(fetchProducts(currentShopId));
@@ -64,7 +86,7 @@ export default function Products() {
     return matchSearch && matchCategory && matchStatus;
   });
 
-  const resetForm = () => { setForm(defaultForm); setShowAdvanced(false); };
+  const resetForm = () => { setForm(defaultForm); setShowAdvanced(false); setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = ""; };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +130,7 @@ export default function Products() {
       discount: p.discount || 0, taxRate: p.taxRate || 0, imageUrl: p.imageUrl || "",
     });
     setShowAdvanced(true);
+    setImagePreview(p.imageUrl || null);
     setDialogOpen(true);
   };
 
@@ -188,10 +211,50 @@ export default function Products() {
                 <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa (Link)</label>
-                <Input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/picha.jpg" />
-                {form.imageUrl && (
-                  <img src={form.imageUrl} alt="Preview" className="mt-2 h-20 w-20 rounded-md object-cover border border-border" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+                {imagePreview || form.imageUrl ? (
+                  <div className="relative inline-block">
+                    <img
+                      src={imagePreview || form.imageUrl}
+                      alt="Preview"
+                      className="h-24 w-24 rounded-lg object-cover border-2 border-border shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute -top-2 -right-2 rounded-full bg-destructive text-destructive-foreground p-1 shadow-md hover:opacity-80 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="mt-1 text-xs text-primary hover:underline block"
+                    >
+                      Badilisha picha
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-3 w-full rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 bg-muted/30 p-4 transition-colors cursor-pointer"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <ImagePlus className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-medium text-foreground">Bonyeza kuchagua picha</p>
+                      <p className="text-xs text-muted-foreground">PNG, JPG hadi 5MB</p>
+                    </div>
+                  </button>
                 )}
               </div>
 
