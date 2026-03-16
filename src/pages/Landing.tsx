@@ -167,7 +167,7 @@ export default function Landing() {
             Sasa duka lako linaonekana mtandaoni!
           </div>
           <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Simamia Biashara Yako
+            Simamia Duka Lako
             <span className="block text-primary"> na Litangaze Mtandaoni</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
