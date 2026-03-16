@@ -15,6 +15,7 @@ import { fetchProducts, editProduct } from "@/store/productsSlice";
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface CartItem {
   product: Product;
