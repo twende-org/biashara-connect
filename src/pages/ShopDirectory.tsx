@@ -432,7 +432,7 @@ export default function ShopDirectory() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-1.5 rounded-lg bg-accent/10 px-3 py-2 text-xs font-medium text-accent-foreground hover:bg-accent hover:text-accent-foreground transition-colors border border-border"
+                            className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-colors border border-primary/30"
                           >
                             <Navigation className="h-3.5 w-3.5" /> Ongozwa
                           </a>
