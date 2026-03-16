@@ -74,6 +74,10 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
 
+              {/* Public shop directory */}
+              <Route path="/maduka" element={<ShopDirectory />} />
+              <Route path="/maduka/:shopId" element={<ShopDetail />} />
+
               {/* SEO landing pages */}
               <Route path="/duka-pos-system" element={<DukaPosSystem />} />
               <Route path="/twendedigital" element={<TwendeDigital />} />

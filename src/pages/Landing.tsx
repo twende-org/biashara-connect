@@ -9,6 +9,7 @@ import SEO from "@/components/SEO";
 
 const navLinks = [
   { label: "Nyumbani", href: "#home" },
+  { label: "Maduka", href: "/maduka", isRoute: true },
   { label: "Kuhusu", href: "#about" },
   { label: "Bei", href: "#pricing" },
   { label: "Jinsi Inavyofanya Kazi", href: "#how-it-works" },
