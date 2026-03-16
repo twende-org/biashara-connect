@@ -47,8 +47,30 @@ export default function Products() {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [form, setForm] = useState(defaultForm);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Tafadhali chagua picha tu"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Picha isizidi 5MB"); return; }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setImagePreview(dataUrl);
+      setForm((f) => ({ ...f, imageUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setForm((f) => ({ ...f, imageUrl: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   useEffect(() => {
     if (currentShopId) dispatch(fetchProducts(currentShopId));
