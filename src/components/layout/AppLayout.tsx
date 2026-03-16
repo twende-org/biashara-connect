@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -13,13 +13,17 @@ import {
   X,
   Bell,
   ChevronDown,
+  ShieldAlert,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchShops, setCurrentShop } from "@/store/shopsSlice";
 import { logoutUser } from "@/store/authSlice";
+import { useUserRole } from "@/hooks/useUserRole";
+import { roleNavAccess } from "@/lib/permissions";
+import type { AppRole } from "@/types";
 
-const navItems = [
+const allNavItems = [
   { label: "Dashibodi", icon: LayoutDashboard, path: "/app" },
   { label: "Maduka", icon: Store, path: "/app/maduka" },
   { label: "Bidhaa", icon: Package, path: "/app/bidhaa" },
@@ -28,6 +32,12 @@ const navItems = [
   { label: "Wasambazaji", icon: Truck, path: "/app/wasambazaji" },
   { label: "Watumiaji", icon: Users, path: "/app/watumiaji" },
 ];
+
+const roleLabels: Record<AppRole, string> = {
+  owner: "Mmiliki",
+  manager: "Meneja",
+  attendant: "Muuzaji",
+};
 
 interface AppLayoutProps {
   children?: React.ReactNode; // optional to support Outlet
