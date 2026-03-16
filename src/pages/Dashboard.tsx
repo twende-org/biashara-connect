@@ -208,6 +208,59 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+          {/* Activity Logs — Owner Only */}
+          {role === "owner" && (
+            <div className="stat-card mt-6">
+              <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
+                <Activity className="h-4 w-4 text-primary" />
+                Shughuli za Hivi Karibuni
+              </h2>
+              {logsLoading ? (
+                <div className="flex justify-center py-6">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                </div>
+              ) : activityLogs.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">Hakuna shughuli zilizorekodiwa bado</p>
+              ) : (
+                <div className="space-y-2">
+                  {activityLogs.map((log) => (
+                    <div key={log.id} className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
+                      <div className={`mt-0.5 rounded-full p-1.5 ${
+                        log.category === "sale" ? "bg-success/10 text-success" :
+                        log.category === "product" ? "bg-primary/10 text-primary" :
+                        log.category === "expense" ? "bg-destructive/10 text-destructive" :
+                        "bg-muted text-muted-foreground"
+                      }`}>
+                        {log.category === "sale" ? <ShoppingCart className="h-3.5 w-3.5" /> :
+                         log.category === "product" ? <Package className="h-3.5 w-3.5" /> :
+                         <Activity className="h-3.5 w-3.5" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-foreground">{log.details}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                            <User className="h-3 w-3" />
+                            {log.userName}
+                          </span>
+                          <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
+                            log.role === "owner" ? "bg-primary/10 text-primary" :
+                            log.role === "manager" ? "bg-info/10 text-info" :
+                            "bg-muted text-muted-foreground"
+                          }`}>
+                            {log.role === "owner" ? "Mmiliki" : log.role === "manager" ? "Meneja" : "Muuzaji"}
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            {log.createdAt?.toDate ? log.createdAt.toDate().toLocaleString("sw-TZ", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : "—"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>
