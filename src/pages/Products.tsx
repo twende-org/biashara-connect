@@ -130,6 +130,7 @@ export default function Products() {
       discount: p.discount || 0, taxRate: p.taxRate || 0, imageUrl: p.imageUrl || "",
     });
     setShowAdvanced(true);
+    setImagePreview(p.imageUrl || null);
     setDialogOpen(true);
   };
 
