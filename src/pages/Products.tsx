@@ -86,7 +86,7 @@ export default function Products() {
     return matchSearch && matchCategory && matchStatus;
   });
 
-  const resetForm = () => { setForm(defaultForm); setShowAdvanced(false); };
+  const resetForm = () => { setForm(defaultForm); setShowAdvanced(false); setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = ""; };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
