@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useActivityLogger } from "@/hooks/useActivityLogger";
 
 const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,
@@ -36,6 +37,7 @@ export default function Products() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const { permissions } = useUserRole();
+  const { log: logActivity } = useActivityLogger();
   const { products, loading } = useAppSelector((s) => s.products);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
@@ -74,9 +76,11 @@ export default function Products() {
       setProgress(60);
       if (editingProduct) {
         await dispatch(editProduct({ id: editingProduct.id, data })).unwrap();
+        logActivity({ action: "product_updated", category: "product", details: `Amesasisha bidhaa: ${data.name}`, metadata: { productId: editingProduct.id } });
         toast.success("Bidhaa imesasishwa!");
       } else {
         await dispatch(createProduct({ ...data, shopId: currentShopId })).unwrap();
+        logActivity({ action: "product_created", category: "product", details: `Ameongeza bidhaa mpya: ${data.name}`, metadata: { name: data.name, stock: data.stock } });
         toast.success("Bidhaa imeongezwa!");
       }
       setProgress(100);

@@ -14,6 +14,7 @@ import { fetchExpenses, createExpense, editExpense, removeExpense } from "@/stor
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useActivityLogger } from "@/hooks/useActivityLogger";
 
 const EXPENSE_CATEGORIES = [
   "Kodi ya Duka", "Umeme", "Maji", "Usafiri", "Mishahara",
@@ -27,6 +28,7 @@ export default function Expenses() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const { permissions } = useUserRole();
+  const { log: logActivity } = useActivityLogger();
   const { expenses, loading } = useAppSelector((s) => s.expenses);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -67,6 +69,7 @@ export default function Expenses() {
       setProgress(60);
       if (editId) {
         await dispatch(editExpense({ id: editId, data: { ...form, amount: +form.amount } })).unwrap();
+        logActivity({ action: "expense_updated", category: "expense", details: `Amesasisha matumizi: ${form.description}` });
         toast.success("Matumizi yamebadilishwa!");
       } else {
         await dispatch(createExpense({
@@ -76,6 +79,7 @@ export default function Expenses() {
           reference: form.reference || undefined,
           notes: form.notes || undefined,
         })).unwrap();
+        logActivity({ action: "expense_created", category: "expense", details: `Amerekodi matumizi: ${form.description} - ${formatTZS(+form.amount)}` });
         toast.success("Matumizi yamerekodiwa!");
       }
       setProgress(100);

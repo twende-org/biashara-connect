@@ -16,6 +16,7 @@ import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useActivityLogger } from "@/hooks/useActivityLogger";
 
 interface CartItem {
   product: Product;
@@ -27,6 +28,7 @@ export default function Sales() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const { permissions } = useUserRole();
+  const { log: logActivity } = useActivityLogger();
   const { sales, loading } = useAppSelector((s) => s.sales);
   const products = useAppSelector((s) => s.products.products);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -139,14 +141,36 @@ export default function Sales() {
 
         setProgress(10 + Math.round(((i + 1) / totalItems) * 70));
 
-        await dispatch(editProduct({
-          id: item.product.id,
-          data: { stock: item.product.stock - item.quantity },
-        })).unwrap();
+        // Stock update — only send stock field (attendant-safe)
+        try {
+          await dispatch(editProduct({
+            id: item.product.id,
+            data: { stock: item.product.stock - item.quantity },
+          })).unwrap();
+        } catch (stockErr: any) {
+          console.error("Stock update failed for", item.product.name, stockErr);
+          toast.error(`Stoo ya ${item.product.name} haijasasishwa: ${stockErr?.message || "Ruhusa imezuiwa"}`);
+        }
+
+        // Log activity
+        logActivity({
+          action: "sale_created",
+          category: "sale",
+          details: `Ameuzwa ${item.product.name} x${item.quantity} kwa ${formatTZS(item.lineTotal)}`,
+          metadata: {
+            productId: item.product.id,
+            productName: item.product.name,
+            quantity: item.quantity,
+            totalPrice: item.lineTotal,
+            paymentMethod,
+          },
+        });
       }
 
       setProgress(100);
       toast.success(`Mauzo ${totalItems} yamerekodiwa!`);
+      // Re-fetch products to sync stock
+      dispatch(fetchProducts(currentShopId));
       setTimeout(() => {
         setDialogOpen(false);
         resetForm();
