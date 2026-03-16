@@ -23,7 +23,7 @@ const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,
   supplier: "", sku: "", barcode: "", brand: "", description: "", unit: "pcs",
   weight: "", size: "", color: "", expiryDate: "", status: "active" as "active" | "inactive" | "discontinued",
-  tags: "", warranty: "", discount: 0, taxRate: 0,
+  tags: "", warranty: "", discount: 0, taxRate: 0, imageUrl: "",
 };
 
 const units = ["pcs", "kg", "g", "litre", "ml", "box", "pack", "metre", "dozen", "pair", "set", "roll", "bag"];
@@ -105,7 +105,7 @@ export default function Products() {
       description: p.description || "", unit: p.unit || "pcs", weight: p.weight || "",
       size: p.size || "", color: p.color || "", expiryDate: p.expiryDate || "",
       status: p.status || "active", tags: p.tags || "", warranty: p.warranty || "",
-      discount: p.discount || 0, taxRate: p.taxRate || 0,
+      discount: p.discount || 0, taxRate: p.taxRate || 0, imageUrl: p.imageUrl || "",
     });
     setShowAdvanced(true);
     setDialogOpen(true);
@@ -186,6 +186,13 @@ export default function Products() {
               <div>
                 <label className="text-sm font-medium text-foreground mb-1 block">Msambazaji</label>
                 <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa (Link)</label>
+                <Input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/picha.jpg" />
+                {form.imageUrl && (
+                  <img src={form.imageUrl} alt="Preview" className="mt-2 h-20 w-20 rounded-md object-cover border border-border" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                )}
               </div>
 
               {/* Advanced toggle */}
