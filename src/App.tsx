@@ -23,6 +23,10 @@ import DukaPosSystem from "@/pages/seo/DukaPosSystem";
 import TwendeDigital from "@/pages/seo/TwendeDigital";
 import DukSmart from "@/pages/seo/DukSmart";
 
+// Public pages (lazy)
+const ShopDirectory = lazy(() => import("@/pages/ShopDirectory"));
+const ShopDetail = lazy(() => import("@/pages/ShopDetail"));
+
 // Lazy-loaded protected pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Shops = lazy(() => import("@/pages/Shops"));
