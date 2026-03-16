@@ -137,11 +137,17 @@ export default function Landing() {
 
         {mobileMenuOpen && (
           <div className="border-t bg-background px-4 py-4 md:hidden">
-            {navLinks.map((l) => (
-              <a key={l.href} href={l.href} onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
-                {l.label}
-              </a>
-            ))}
+            {navLinks.map((l) =>
+              l.isRoute ? (
+                <Link key={l.href} to={l.href} onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
+                  {l.label}
+                </Link>
+              ) : (
+                <a key={l.href} href={l.href} onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
+                  {l.label}
+                </a>
+              )
+            )}
             <div className="mt-4 flex flex-col gap-2">
               <Link to="/login"><Button variant="outline" className="w-full">Ingia</Button></Link>
               <Link to="/register"><Button className="w-full">Jisajili Bure</Button></Link>
