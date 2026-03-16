@@ -51,6 +51,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
+  if (!auth) throw new Error("Firebase haijasanidiwa");
   await signOut(auth);
 });
 
