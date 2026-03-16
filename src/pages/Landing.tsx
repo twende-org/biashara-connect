@@ -17,11 +17,11 @@ const navLinks = [
 ];
 
 const features = [
-  { icon: Package, title: "Usimamizi wa Bidhaa", desc: "Fuatilia stoo, bei, SKU, expiry na maelezo yote ya bidhaa zako kwa urahisi." },
-  { icon: BarChart3, title: "Mauzo & Ripoti", desc: "Rekodi mauzo kwa njia ya kitaalamu na upate ripoti za kina za faida na hasara." },
-  { icon: CreditCard, title: "Malipo Mbalimbali", desc: "Pokea malipo kupitia Taslimu, M-Pesa, Tigo Pesa, Airtel Money, Benki na Mkopo." },
+  { icon: Package, title: "Simamia Bidhaa", desc: "Fuatilia stoo, bei, SKU, expiry na maelezo yote ya bidhaa zako kwa urahisi — kila kitu sehemu moja." },
+  { icon: Globe, title: "Tangaza Duka Lako", desc: "Duka lako linaonekana mtandaoni. Wateja wapya wanaweza kutafuta na kupata bidhaa zako moja kwa moja." },
+  { icon: BarChart3, title: "Mauzo & Ripoti", desc: "Rekodi mauzo kwa njia ya kitaalamu na upate ripoti za kina za faida, hasara, na mwenendo." },
+  { icon: Search, title: "Tafuta Maduka & Bidhaa", desc: "Wateja wanaweza kutafuta maduka na bidhaa kwa eneo, kategoria, na bei — wapate wanachohitaji haraka." },
   { icon: Users, title: "Timu & Majukumu", desc: "Ongeza wafanyakazi na uwape majukumu tofauti — mmiliki, meneja, au mhudumu." },
-  { icon: ShieldCheck, title: "Usalama wa Data", desc: "Data yako inalindwa na Firebase na sheria za usalama zilizoimarishwa." },
   { icon: Smartphone, title: "Fanya Kazi Popote", desc: "Tumia simu, tablet au kompyuta — DukaSmart inafanya kazi kwenye kifaa chochote." },
 ];
 
