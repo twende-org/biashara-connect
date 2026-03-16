@@ -192,9 +192,9 @@ export default function Landing() {
       <section id="about" className="border-t py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Kwa Nini DukaSmart?</h2>
+            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Simamia Ndani, Tangaza Nje</h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Tumejengwa kwa ajili ya wafanyabiashara wa Tanzania. Rahisi, haraka, na yenye nguvu.
+              DukaSmart inakusaidia kusimamia biashara yako kwa ufanisi — na wakati huo huo duka lako linaonekana kwa wateja wapya mtandaoni.
             </p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
