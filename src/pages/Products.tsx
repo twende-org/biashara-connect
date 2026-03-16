@@ -187,6 +187,13 @@ export default function Products() {
                 <label className="text-sm font-medium text-foreground mb-1 block">Msambazaji</label>
                 <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
               </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa (Link)</label>
+                <Input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/picha.jpg" />
+                {form.imageUrl && (
+                  <img src={form.imageUrl} alt="Preview" className="mt-2 h-20 w-20 rounded-md object-cover border border-border" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                )}
+              </div>
 
               {/* Advanced toggle */}
               <button
