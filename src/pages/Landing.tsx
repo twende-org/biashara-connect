@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Store, Menu, X, BarChart3, ShieldCheck, Smartphone, Users, CreditCard, Package, ArrowRight, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Store, Menu, X, BarChart3, ShieldCheck, Smartphone, Users, CreditCard, Package, ArrowRight, Check, ChevronDown, ChevronUp, Globe, Search, Eye } from "lucide-react";
 import { Mail, Phone } from "lucide-react";
 import { BsShop } from "react-icons/bs";
 
