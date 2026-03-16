@@ -210,10 +210,50 @@ export default function Products() {
                 <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa (Link)</label>
-                <Input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/picha.jpg" />
-                {form.imageUrl && (
-                  <img src={form.imageUrl} alt="Preview" className="mt-2 h-20 w-20 rounded-md object-cover border border-border" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+                {imagePreview || form.imageUrl ? (
+                  <div className="relative inline-block">
+                    <img
+                      src={imagePreview || form.imageUrl}
+                      alt="Preview"
+                      className="h-24 w-24 rounded-lg object-cover border-2 border-border shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute -top-2 -right-2 rounded-full bg-destructive text-destructive-foreground p-1 shadow-md hover:opacity-80 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="mt-1 text-xs text-primary hover:underline block"
+                    >
+                      Badilisha picha
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-3 w-full rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 bg-muted/30 p-4 transition-colors cursor-pointer"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <ImagePlus className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-medium text-foreground">Bonyeza kuchagua picha</p>
+                      <p className="text-xs text-muted-foreground">PNG, JPG hadi 5MB</p>
+                    </div>
+                  </button>
                 )}
               </div>
 
