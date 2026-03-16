@@ -13,6 +13,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
+  const { permissions } = useUserRole();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const products = useAppSelector((s) => s.products.products);
   const todaySummary = useAppSelector((s) => s.sales.todaySummary);
