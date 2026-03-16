@@ -117,6 +117,7 @@ export default function Products() {
           <h1 className="page-title">Bidhaa</h1>
           <p className="page-description">Simamia bidhaa zako zote — aina yoyote ya biashara</p>
         </div>
+        {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />Ongeza Bidhaa</Button>
