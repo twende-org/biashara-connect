@@ -56,6 +56,7 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
 });
 
 export const resetPassword = createAsyncThunk("auth/resetPassword", async (email: string) => {
+  if (!auth) throw new Error("Firebase haijasanidiwa");
   await sendPasswordResetEmail(auth, email);
 });
 
