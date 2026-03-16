@@ -26,6 +26,7 @@ interface CartItem {
 export default function Sales() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const { permissions } = useUserRole();
   const { sales, loading } = useAppSelector((s) => s.sales);
   const products = useAppSelector((s) => s.products.products);
   const [dialogOpen, setDialogOpen] = useState(false);
