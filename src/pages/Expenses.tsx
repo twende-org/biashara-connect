@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchExpenses, createExpense, editExpense, removeExpense } from "@/store/expensesSlice";
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const EXPENSE_CATEGORIES = [
   "Kodi ya Duka", "Umeme", "Maji", "Usafiri", "Mishahara",
