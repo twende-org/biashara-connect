@@ -3,13 +3,13 @@ import { getAuth, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyB5INGjCMf9onOFF7OGBeFJOQTY4PjflUg",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "duka-smart-16c8e.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "duka-smart-16c8e",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "duka-smart-16c8e.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "455090093044",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:455090093044:web:19b332f83d394274fc57a1",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-JMKXZLBP1H",
 };
 
 let app: FirebaseApp | null = null;
