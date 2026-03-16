@@ -173,6 +173,7 @@ export default function Sales() {
           <h1 className="page-title">Mauzo</h1>
           <p className="page-description">Rekodi na fuatilia mauzo yako</p>
         </div>
+        {permissions.canAddSale && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) resetForm(); }}>
           <DialogTrigger asChild>
             <Button disabled={!currentShopId}><Plus className="h-4 w-4 mr-2" />Mauzo Mapya</Button>

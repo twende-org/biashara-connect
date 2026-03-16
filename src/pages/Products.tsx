@@ -368,12 +368,16 @@ export default function Products() {
                       <button onClick={() => setDetailProduct(p)} className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="Angalia">
                         <Eye className="h-4 w-4 text-muted-foreground" />
                       </button>
-                      <button onClick={() => handleEdit(p)} className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="Hariri">
-                        <Edit className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      <button onClick={() => { dispatch(removeProduct(p.id)); toast.success("Bidhaa imefutwa!"); }} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors" title="Futa">
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </button>
+                      {permissions.canEditProduct && (
+                        <button onClick={() => handleEdit(p)} className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="Hariri">
+                          <Edit className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                      )}
+                      {permissions.canDeleteProduct && (
+                        <button onClick={() => { dispatch(removeProduct(p.id)); toast.success("Bidhaa imefutwa!"); }} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors" title="Futa">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
