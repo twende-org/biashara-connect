@@ -41,7 +41,7 @@ const plans = [
     features: [
       "Duka 1",
       "Bidhaa hadi 50",
-      "Mauzo yasiyopungua",
+      "Duka linaonekana mtandaoni",
       "Ripoti za msingi",
     ],
     cta: "Anza Ndogo",
