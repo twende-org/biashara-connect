@@ -112,11 +112,17 @@ export default function Landing() {
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
-            {navLinks.map((l) => (
-              <a key={l.href} href={l.href} className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-                {l.label}
-              </a>
-            ))}
+            {navLinks.map((l) =>
+              l.isRoute ? (
+                <Link key={l.href} to={l.href} className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                  {l.label}
+                </Link>
+              ) : (
+                <a key={l.href} href={l.href} className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                  {l.label}
+                </a>
+              )
+            )}
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
