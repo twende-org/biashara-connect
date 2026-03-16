@@ -164,14 +164,14 @@ export default function Landing() {
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-1.5 text-sm text-muted-foreground mb-6">
             <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-            Toleo Jipya — Sasa na Matumizi!
+            Sasa duka lako linaonekana mtandaoni!
           </div>
           <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Simamia Biashara Yako
-            <span className="block text-primary"> Kwa Urahisi na Ufanisi</span>
+            <span className="block text-primary"> na Litangaze Mtandaoni</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            DukaSmart ni mfumo kamili wa kusimamia duka lako — bidhaa, mauzo, matumizi, wafanyakazi, na ripoti. Yote katika sehemu moja.
+            DukaSmart ni mfumo kamili wa kusimamia duka lako — bidhaa, mauzo, wafanyakazi, na ripoti — huku ukilitangaza mtandaoni ili wateja wapya wakupate kwa urahisi.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link to="/register">
