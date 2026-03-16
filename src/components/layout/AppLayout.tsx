@@ -172,6 +172,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
         {/* User section */}
         <div className="border-t border-sidebar-border p-3">
+          {role && (
+            <div className="flex items-center gap-2 px-3 py-1.5 mb-1">
+              <ShieldAlert className="h-3.5 w-3.5 text-sidebar-muted" />
+              <span className="text-xs font-medium text-sidebar-muted">
+                {roleLabels[role]}
+              </span>
+            </div>
+          )}
           <div className="flex items-center gap-3 rounded-lg px-3 py-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
               {user?.displayName?.charAt(0)?.toUpperCase() || "?"}
