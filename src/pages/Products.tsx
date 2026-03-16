@@ -105,7 +105,7 @@ export default function Products() {
       description: p.description || "", unit: p.unit || "pcs", weight: p.weight || "",
       size: p.size || "", color: p.color || "", expiryDate: p.expiryDate || "",
       status: p.status || "active", tags: p.tags || "", warranty: p.warranty || "",
-      discount: p.discount || 0, taxRate: p.taxRate || 0,
+      discount: p.discount || 0, taxRate: p.taxRate || 0, imageUrl: p.imageUrl || "",
     });
     setShowAdvanced(true);
     setDialogOpen(true);
