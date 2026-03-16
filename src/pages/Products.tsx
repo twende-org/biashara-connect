@@ -37,6 +37,7 @@ export default function Products() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const { permissions } = useUserRole();
+  const { log: logActivity } = useActivityLogger();
   const { products, loading } = useAppSelector((s) => s.products);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
