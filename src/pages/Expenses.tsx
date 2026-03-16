@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchExpenses, createExpense, editExpense, removeExpense } from "@/store/expensesSlice";
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const EXPENSE_CATEGORIES = [
   "Kodi ya Duka", "Umeme", "Maji", "Usafiri", "Mishahara",
@@ -25,6 +26,7 @@ const emptyForm = { category: "", description: "", amount: 0, date: new Date().t
 export default function Expenses() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const { permissions } = useUserRole();
   const { expenses, loading } = useAppSelector((s) => s.expenses);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -106,6 +108,7 @@ export default function Expenses() {
           <h1 className="page-title">Matumizi</h1>
           <p className="page-description">Rekodi na fuatilia matumizi ya biashara</p>
         </div>
+        {permissions.canAddExpense && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setForm(emptyForm); setEditId(null); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button disabled={!currentShopId}><Plus className="h-4 w-4 mr-2" />Matumizi Mapya</Button>
@@ -167,6 +170,7 @@ export default function Expenses() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Filters */}
@@ -244,8 +248,12 @@ export default function Expenses() {
                   <td className="py-3 text-muted-foreground">{e.date}</td>
                   <td className="py-3">
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEdit(e)} className="rounded p-1 hover:bg-muted"><Edit2 className="h-4 w-4 text-muted-foreground" /></button>
-                      <button onClick={() => handleDelete(e.id)} className="rounded p-1 hover:bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></button>
+                      {permissions.canEditExpense && (
+                        <button onClick={() => openEdit(e)} className="rounded p-1 hover:bg-muted"><Edit2 className="h-4 w-4 text-muted-foreground" /></button>
+                      )}
+                      {permissions.canDeleteExpense && (
+                        <button onClick={() => handleDelete(e.id)} className="rounded p-1 hover:bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></button>
+                      )}
                     </div>
                   </td>
                 </tr>

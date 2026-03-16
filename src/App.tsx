@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 
 import AuthGuard from "@/components/AuthGuard";
 import AppLayout from "@/components/layout/AppLayout";
+import RoleGuard from "@/components/RoleGuard";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 
 // Public pages
@@ -42,12 +43,12 @@ const ProtectedRoutes = () => (
   <AppLayout>
     <Routes>
       <Route index element={<Dashboard />} />
-      <Route path="maduka" element={<Shops />} />
-      <Route path="bidhaa" element={<Products />} />
-      <Route path="mauzo" element={<Sales />} />
-      <Route path="matumizi" element={<Expenses />} />
-      <Route path="wasambazaji" element={<Suppliers />} />
-      <Route path="watumiaji" element={<UserManagement />} />
+      <Route path="maduka" element={<RoleGuard path="/app/maduka"><Shops /></RoleGuard>} />
+      <Route path="bidhaa" element={<RoleGuard path="/app/bidhaa"><Products /></RoleGuard>} />
+      <Route path="mauzo" element={<RoleGuard path="/app/mauzo"><Sales /></RoleGuard>} />
+      <Route path="matumizi" element={<RoleGuard path="/app/matumizi"><Expenses /></RoleGuard>} />
+      <Route path="wasambazaji" element={<RoleGuard path="/app/wasambazaji"><Suppliers /></RoleGuard>} />
+      <Route path="watumiaji" element={<RoleGuard path="/app/watumiaji"><UserManagement /></RoleGuard>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </AppLayout>

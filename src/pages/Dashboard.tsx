@@ -9,9 +9,11 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchProducts } from "@/store/productsSlice";
 import { fetchTodaySummary, fetchSummariesForRange, fetchSales } from "@/store/salesSlice";
 import { formatTZS } from "@/data/mockData";
+import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
+  const { permissions } = useUserRole();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const products = useAppSelector((s) => s.products.products);
   const todaySummary = useAppSelector((s) => s.sales.todaySummary);
@@ -69,6 +71,7 @@ export default function Dashboard() {
       change: `${todayTransactions} mauzo`,
       icon: ShoppingCart,
       color: "bg-primary/10 text-primary",
+      visible: true,
     },
     {
       label: "Faida ya Leo",
@@ -76,6 +79,7 @@ export default function Dashboard() {
       change: todayRevenue > 0 ? `${((todayProfit / todayRevenue) * 100).toFixed(0)}%` : "0%",
       icon: TrendingUp,
       color: "bg-success/10 text-success",
+      visible: permissions.canViewDashboardProfit,
     },
     {
       label: "Bidhaa Zote",
@@ -83,6 +87,7 @@ export default function Dashboard() {
       change: formatTZS(totalStockValue),
       icon: Package,
       color: "bg-info/10 text-info",
+      visible: permissions.canViewDashboardStock,
     },
     {
       label: "Stoo ya Chini",
@@ -90,8 +95,9 @@ export default function Dashboard() {
       change: lowStock.length > 0 ? "Tahadhari!" : "Sawa",
       icon: AlertTriangle,
       color: "bg-destructive/10 text-destructive",
+      visible: permissions.canViewDashboardStock,
     },
-  ];
+  ].filter((s) => s.visible);
 
   return (
     <div>

@@ -15,12 +15,14 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchSuppliers, createSupplier, editSupplier, removeSupplier } from "@/store/suppliersSlice";
 import { toast } from "sonner";
 import type { Supplier } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const defaultForm = { name: "", phone: "", email: "", address: "", products: "", notes: "" };
 
 export default function Suppliers() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
+  const { permissions } = useUserRole();
   const { suppliers, loading } = useAppSelector((s) => s.suppliers);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -96,6 +98,7 @@ export default function Suppliers() {
           <h1 className="page-title">Wasambazaji</h1>
           <p className="page-description">Simamia wasambazaji wako</p>
         </div>
+        {permissions.canAddSupplier && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingSup(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />Ongeza Msambazaji</Button>
@@ -138,6 +141,7 @@ export default function Suppliers() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       <div className="relative mb-6 max-w-sm">
@@ -159,12 +163,16 @@ export default function Suppliers() {
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-foreground">{s.name}</h3>
                 <div className="flex gap-1">
-                  <button onClick={() => handleEdit(s)} className="rounded-lg p-1.5 hover:bg-muted transition-colors">
-                    <Edit className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  <button onClick={() => handleDelete(s.id)} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors">
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </button>
+                  {permissions.canEditSupplier && (
+                    <button onClick={() => handleEdit(s)} className="rounded-lg p-1.5 hover:bg-muted transition-colors">
+                      <Edit className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  )}
+                  {permissions.canDeleteSupplier && (
+                    <button onClick={() => handleDelete(s.id)} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="space-y-1">

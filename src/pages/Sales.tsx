@@ -15,6 +15,7 @@ import { fetchProducts, editProduct } from "@/store/productsSlice";
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface CartItem {
   product: Product;
@@ -25,6 +26,7 @@ interface CartItem {
 export default function Sales() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const { permissions } = useUserRole();
   const { sales, loading } = useAppSelector((s) => s.sales);
   const products = useAppSelector((s) => s.products.products);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -171,6 +173,7 @@ export default function Sales() {
           <h1 className="page-title">Mauzo</h1>
           <p className="page-description">Rekodi na fuatilia mauzo yako</p>
         </div>
+        {permissions.canAddSale && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) resetForm(); }}>
           <DialogTrigger asChild>
             <Button disabled={!currentShopId}><Plus className="h-4 w-4 mr-2" />Mauzo Mapya</Button>
@@ -289,6 +292,7 @@ export default function Sales() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Filters */}

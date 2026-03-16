@@ -16,6 +16,7 @@ import { formatTZS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,
@@ -34,6 +35,7 @@ const categories = [
 export default function Products() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const { permissions } = useUserRole();
   const { products, loading } = useAppSelector((s) => s.products);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
@@ -115,6 +117,7 @@ export default function Products() {
           <h1 className="page-title">Bidhaa</h1>
           <p className="page-description">Simamia bidhaa zako zote — aina yoyote ya biashara</p>
         </div>
+        {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />Ongeza Bidhaa</Button>
@@ -265,6 +268,7 @@ export default function Products() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Filters */}
@@ -364,12 +368,16 @@ export default function Products() {
                       <button onClick={() => setDetailProduct(p)} className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="Angalia">
                         <Eye className="h-4 w-4 text-muted-foreground" />
                       </button>
-                      <button onClick={() => handleEdit(p)} className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="Hariri">
-                        <Edit className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      <button onClick={() => { dispatch(removeProduct(p.id)); toast.success("Bidhaa imefutwa!"); }} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors" title="Futa">
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </button>
+                      {permissions.canEditProduct && (
+                        <button onClick={() => handleEdit(p)} className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="Hariri">
+                          <Edit className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                      )}
+                      {permissions.canDeleteProduct && (
+                        <button onClick={() => { dispatch(removeProduct(p.id)); toast.success("Bidhaa imefutwa!"); }} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors" title="Futa">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

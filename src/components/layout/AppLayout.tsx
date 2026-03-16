@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -13,13 +13,17 @@ import {
   X,
   Bell,
   ChevronDown,
+  ShieldAlert,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchShops, setCurrentShop } from "@/store/shopsSlice";
 import { logoutUser } from "@/store/authSlice";
+import { useUserRole } from "@/hooks/useUserRole";
+import { roleNavAccess } from "@/lib/permissions";
+import type { AppRole } from "@/types";
 
-const navItems = [
+const allNavItems = [
   { label: "Dashibodi", icon: LayoutDashboard, path: "/app" },
   { label: "Maduka", icon: Store, path: "/app/maduka" },
   { label: "Bidhaa", icon: Package, path: "/app/bidhaa" },
@@ -28,6 +32,12 @@ const navItems = [
   { label: "Wasambazaji", icon: Truck, path: "/app/wasambazaji" },
   { label: "Watumiaji", icon: Users, path: "/app/watumiaji" },
 ];
+
+const roleLabels: Record<AppRole, string> = {
+  owner: "Mmiliki",
+  manager: "Meneja",
+  attendant: "Muuzaji",
+};
 
 interface AppLayoutProps {
   children?: React.ReactNode; // optional to support Outlet
@@ -39,9 +49,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
   const { shops, currentShopId } = useAppSelector((s) => s.shops);
+  const { role, permissions } = useUserRole();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+
+  // Filter nav items based on role
+  const navItems = useMemo(() => {
+    if (!role) return allNavItems.filter((i) => i.path === "/app");
+    const allowed = roleNavAccess[role];
+    return allNavItems.filter((i) => allowed.includes(i.path));
+  }, [role]);
 
   const currentShop = shops.find((s) => s.id === currentShopId);
 
@@ -154,6 +172,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
         {/* User section */}
         <div className="border-t border-sidebar-border p-3">
+          {role && (
+            <div className="flex items-center gap-2 px-3 py-1.5 mb-1">
+              <ShieldAlert className="h-3.5 w-3.5 text-sidebar-muted" />
+              <span className="text-xs font-medium text-sidebar-muted">
+                {roleLabels[role]}
+              </span>
+            </div>
+          )}
           <div className="flex items-center gap-3 rounded-lg px-3 py-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
               {user?.displayName?.charAt(0)?.toUpperCase() || "?"}
