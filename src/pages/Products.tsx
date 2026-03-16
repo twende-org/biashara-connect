@@ -23,7 +23,7 @@ const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,
   supplier: "", sku: "", barcode: "", brand: "", description: "", unit: "pcs",
   weight: "", size: "", color: "", expiryDate: "", status: "active" as "active" | "inactive" | "discontinued",
-  tags: "", warranty: "", discount: 0, taxRate: 0,
+  tags: "", warranty: "", discount: 0, taxRate: 0, imageUrl: "",
 };
 
 const units = ["pcs", "kg", "g", "litre", "ml", "box", "pack", "metre", "dozen", "pair", "set", "roll", "bag"];
