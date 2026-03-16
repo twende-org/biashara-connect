@@ -46,6 +46,16 @@ export default function Dashboard() {
     }));
   }, [currentShopId, dispatch]);
 
+  // Fetch activity logs for owner only
+  useEffect(() => {
+    if (!currentShopId || role !== "owner") return;
+    setLogsLoading(true);
+    getActivityLogs(currentShopId, 20)
+      .then(setActivityLogs)
+      .catch((err) => console.warn("Activity logs failed:", err))
+      .finally(() => setLogsLoading(false));
+  }, [currentShopId, role]);
+
   const lowStock = useMemo(() => products.filter((p) => p.stock <= p.minStock), [products]);
   const totalStockValue = useMemo(() => products.reduce((sum, p) => sum + p.sellingPrice * p.stock, 0), [products]);
 
