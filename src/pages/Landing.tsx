@@ -56,6 +56,7 @@ const plans = [
       "Maduka 5",
       "Bidhaa zisizopungua",
       "Wafanyakazi 10",
+      "Maduka yanayoonekana mtandaoni",
       "Ripoti za kina",
       "Msaada wa kipaumbele",
     ],
