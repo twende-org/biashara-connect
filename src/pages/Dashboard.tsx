@@ -14,12 +14,15 @@ import { getActivityLogs, type ActivityLog } from "@/lib/activityLog";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
-  const { permissions } = useUserRole();
+  const { permissions, role } = useUserRole();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
   const products = useAppSelector((s) => s.products.products);
   const todaySummary = useAppSelector((s) => s.sales.todaySummary);
   const rangeSummaries = useAppSelector((s) => s.sales.rangeSummaries);
   const sales = useAppSelector((s) => s.sales.sales);
+
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  const [logsLoading, setLogsLoading] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
 
