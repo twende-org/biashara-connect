@@ -179,9 +179,11 @@ export default function Landing() {
                 Anza Bure Sasa <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <a href="#how-it-works">
-              <Button variant="outline" size="lg" className="text-base px-8">Jinsi Inavyofanya Kazi</Button>
-            </a>
+            <Link to="/maduka">
+              <Button variant="outline" size="lg" className="gap-2 text-base px-8">
+                <Eye className="h-5 w-5" /> Tazama Maduka
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
