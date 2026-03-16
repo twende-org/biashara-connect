@@ -75,9 +75,11 @@ export default function Products() {
       setProgress(60);
       if (editingProduct) {
         await dispatch(editProduct({ id: editingProduct.id, data })).unwrap();
+        logActivity({ action: "product_updated", category: "product", details: `Amesasisha bidhaa: ${data.name}`, metadata: { productId: editingProduct.id } });
         toast.success("Bidhaa imesasishwa!");
       } else {
         await dispatch(createProduct({ ...data, shopId: currentShopId })).unwrap();
+        logActivity({ action: "product_created", category: "product", details: `Ameongeza bidhaa mpya: ${data.name}`, metadata: { name: data.name, stock: data.stock } });
         toast.success("Bidhaa imeongezwa!");
       }
       setProgress(100);

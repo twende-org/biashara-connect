@@ -68,6 +68,7 @@ export default function Expenses() {
       setProgress(60);
       if (editId) {
         await dispatch(editExpense({ id: editId, data: { ...form, amount: +form.amount } })).unwrap();
+        logActivity({ action: "expense_updated", category: "expense", details: `Amesasisha matumizi: ${form.description}` });
         toast.success("Matumizi yamebadilishwa!");
       } else {
         await dispatch(createExpense({
@@ -77,6 +78,7 @@ export default function Expenses() {
           reference: form.reference || undefined,
           notes: form.notes || undefined,
         })).unwrap();
+        logActivity({ action: "expense_created", category: "expense", details: `Amerekodi matumizi: ${form.description} - ${formatTZS(+form.amount)}` });
         toast.success("Matumizi yamerekodiwa!");
       }
       setProgress(100);
