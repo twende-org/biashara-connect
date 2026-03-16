@@ -4,8 +4,6 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
-  limit,
   serverTimestamp,
   type Firestore,
 } from "firebase/firestore";
@@ -57,7 +55,8 @@ export async function logActivity(params: {
 }
 
 /**
- * Get activity logs for a shop, ordered by most recent first.
+ * Get activity logs for a shop — no composite index needed.
+ * Sorts client-side by createdAt descending.
  */
 export async function getActivityLogs(
   shopId: string,
@@ -65,12 +64,17 @@ export async function getActivityLogs(
 ): Promise<ActivityLog[]> {
   const q = query(
     collection(getDb(), "activity_logs"),
-    where("shopId", "==", shopId),
-    orderBy("createdAt", "desc"),
-    limit(maxResults)
+    where("shopId", "==", shopId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as ActivityLog));
+  const logs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ActivityLog));
+  // Sort client-side (newest first)
+  logs.sort((a, b) => {
+    const ta = a.createdAt?.seconds || 0;
+    const tb = b.createdAt?.seconds || 0;
+    return tb - ta;
+  });
+  return logs.slice(0, maxResults);
 }
 
 /**
@@ -82,10 +86,14 @@ export async function getUserActivityLogs(
 ): Promise<ActivityLog[]> {
   const q = query(
     collection(getDb(), "activity_logs"),
-    where("userId", "==", userId),
-    orderBy("createdAt", "desc"),
-    limit(maxResults)
+    where("userId", "==", userId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as ActivityLog));
+  const logs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ActivityLog));
+  logs.sort((a, b) => {
+    const ta = a.createdAt?.seconds || 0;
+    const tb = b.createdAt?.seconds || 0;
+    return tb - ta;
+  });
+  return logs.slice(0, maxResults);
 }
