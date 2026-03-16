@@ -268,6 +268,7 @@ export default function Products() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Filters */}
