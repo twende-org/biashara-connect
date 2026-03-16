@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Store, Menu, X, BarChart3, ShieldCheck, Smartphone, Users, CreditCard, Package, ArrowRight, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Store, Menu, X, BarChart3, ShieldCheck, Smartphone, Users, CreditCard, Package, ArrowRight, Check, ChevronDown, ChevronUp, Globe, Search, Eye } from "lucide-react";
 import { Mail, Phone } from "lucide-react";
 import { BsShop } from "react-icons/bs";
 
@@ -17,19 +17,19 @@ const navLinks = [
 ];
 
 const features = [
-  { icon: Package, title: "Usimamizi wa Bidhaa", desc: "Fuatilia stoo, bei, SKU, expiry na maelezo yote ya bidhaa zako kwa urahisi." },
-  { icon: BarChart3, title: "Mauzo & Ripoti", desc: "Rekodi mauzo kwa njia ya kitaalamu na upate ripoti za kina za faida na hasara." },
-  { icon: CreditCard, title: "Malipo Mbalimbali", desc: "Pokea malipo kupitia Taslimu, M-Pesa, Tigo Pesa, Airtel Money, Benki na Mkopo." },
+  { icon: Package, title: "Simamia Bidhaa", desc: "Fuatilia stoo, bei, SKU, expiry na maelezo yote ya bidhaa zako kwa urahisi — kila kitu sehemu moja." },
+  { icon: Globe, title: "Tangaza Duka Lako", desc: "Duka lako linaonekana mtandaoni. Wateja wapya wanaweza kutafuta na kupata bidhaa zako moja kwa moja." },
+  { icon: BarChart3, title: "Mauzo & Ripoti", desc: "Rekodi mauzo kwa njia ya kitaalamu na upate ripoti za kina za faida, hasara, na mwenendo." },
+  { icon: Search, title: "Tafuta Maduka & Bidhaa", desc: "Wateja wanaweza kutafuta maduka na bidhaa kwa eneo, kategoria, na bei — wapate wanachohitaji haraka." },
   { icon: Users, title: "Timu & Majukumu", desc: "Ongeza wafanyakazi na uwape majukumu tofauti — mmiliki, meneja, au mhudumu." },
-  { icon: ShieldCheck, title: "Usalama wa Data", desc: "Data yako inalindwa na Firebase na sheria za usalama zilizoimarishwa." },
   { icon: Smartphone, title: "Fanya Kazi Popote", desc: "Tumia simu, tablet au kompyuta — DukaSmart inafanya kazi kwenye kifaa chochote." },
 ];
 
 const steps = [
   { step: "01", title: "Jisajili Bure", desc: "Fungua akaunti kwa dakika chache tu kwa barua pepe na nywila." },
-  { step: "02", title: "Ongeza Duka Lako", desc: "Weka maelezo ya duka lako — jina, eneo na maelezo mengine." },
-  { step: "03", title: "Ongeza Bidhaa", desc: "Ingiza bidhaa zako na maelezo kamili: bei, stoo, kategoria, na zaidi." },
-  { step: "04", title: "Anza Kuuza!", desc: "Rekodi mauzo, fuatilia faida, na simamia biashara yako kwa ufanisi." },
+  { step: "02", title: "Ongeza Duka Lako", desc: "Weka maelezo ya duka lako — jina, eneo, picha — na litangazwe mtandaoni mara moja." },
+  { step: "03", title: "Ongeza Bidhaa", desc: "Ingiza bidhaa zako na maelezo kamili. Wateja wataziona moja kwa moja kwenye duka lako la mtandaoni." },
+  { step: "04", title: "Simamia & Tangaza!", desc: "Rekodi mauzo, fuatilia faida, na duka lako linaendelea kuvutia wateja wapya mtandaoni." },
 ];
 
 const plans = [
@@ -41,7 +41,7 @@ const plans = [
     features: [
       "Duka 1",
       "Bidhaa hadi 50",
-      "Mauzo yasiyopungua",
+      "Duka linaonekana mtandaoni",
       "Ripoti za msingi",
     ],
     cta: "Anza Ndogo",
@@ -56,6 +56,7 @@ const plans = [
       "Maduka 5",
       "Bidhaa zisizopungua",
       "Wafanyakazi 10",
+      "Maduka yanayoonekana mtandaoni",
       "Ripoti za kina",
       "Msaada wa kipaumbele",
     ],
@@ -82,9 +83,10 @@ const plans = [
 const faqs = [
   {
     q: "Je, DukaSmart ni bure?",
-    a: "Hapana, lakini tuna mpango wa Ndogo unaofaa maduka madogo madogo. Mpango huu unakuruhusu kusimamia duka 1 na bidhaa hadi 50 kwa Tsh 9,900/mwezi. Unaweza kuboresha mpango wakati wowote ili kupata vipengele zaidi."
+    a: "Hapana, lakini tuna mpango wa Ndogo unaofaa maduka madogo madogo. Mpango huu unakuruhusu kusimamia duka 1 na bidhaa hadi 50 kwa Tsh 9,900/mwezi. Unaweza kuboresha mpango wakati wowote."
   },
-  { q: "Je, data yangu ni salama?", a: "Kabisa. Tunatumia Firebase na encryption ya hali ya juu kulinda data yako. Hatushiriki data yako na mtu yeyote." },
+  { q: "Je, wateja wanaweza kuona duka langu?", a: "Ndiyo! Ukishasajili duka lako na kuongeza bidhaa, duka lako litaonekana kwenye sehemu ya Maduka ambapo wateja wanaweza kutafuta na kupata bidhaa zako." },
+  { q: "Je, data yangu ni salama?", a: "Kabisa. Tunatumia teknolojia za kisasa za usalama kulinda data yako. Hatushiriki data yako na mtu yeyote." },
   { q: "Je, ninaweza kutumia simu yangu?", a: "Ndiyo, DukaSmart imejengwa kufanya kazi vizuri kwenye simu, tablet na kompyuta." },
   { q: "Je, ninaweza kuongeza wafanyakazi?", a: "Ndiyo! Unaweza kuwapa majukumu tofauti — mmiliki, meneja, au mhudumu — kila mmoja na ruhusa zake." },
 ];
@@ -96,9 +98,9 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Mfumo wa Kusimamia Biashara Yako - Duka POS System"
-        description="DukaSmart ni mfumo bora wa kusimamia duka lako. Simamia bidhaa, mauzo, stoo, matumizi, wasambazaji na wafanyakazi kwa urahisi. Best duka POS system by TwendeDigital."
-        keywords="duka, dukasmart, duka smart, duksmart, twendedigital, twende digital, duka pos system, pos tanzania, shop management, mfumo wa duka, biashara software, inventory management, mauzo, stoo, point of sale, smart shop management"
+        title="Simamia & Tangaza Biashara Yako Mtandaoni — DukaSmart"
+        description="DukaSmart ni mfumo kamili wa kusimamia duka lako na kulitangaza mtandaoni. Simamia bidhaa, mauzo, stoo na wafanyakazi — huku wateja wakikupata na kupata bidhaa zako moja kwa moja."
+        keywords="duka, dukasmart, duka smart, twendedigital, duka pos system, pos tanzania, shop management, mfumo wa duka, biashara software, inventory management, mauzo, stoo, tangaza duka, tafuta bidhaa, maduka mtandaoni"
         canonical="/"
       />
       {/* Navbar */}
@@ -162,14 +164,14 @@ export default function Landing() {
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-1.5 text-sm text-muted-foreground mb-6">
             <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-            Toleo Jipya — Sasa na Matumizi!
+            Sasa duka lako linaonekana mtandaoni!
           </div>
           <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Simamia Biashara Yako
-            <span className="block text-primary"> Kwa Urahisi na Ufanisi</span>
+            <span className="block text-primary"> na Litangaze Mtandaoni</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            DukaSmart ni mfumo kamili wa kusimamia duka lako — bidhaa, mauzo, matumizi, wafanyakazi, na ripoti. Yote katika sehemu moja.
+            DukaSmart ni mfumo kamili wa kusimamia duka lako — bidhaa, mauzo, wafanyakazi, na ripoti — huku ukilitangaza mtandaoni ili wateja wapya wakupate kwa urahisi.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link to="/register">
@@ -177,9 +179,11 @@ export default function Landing() {
                 Anza Bure Sasa <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <a href="#how-it-works">
-              <Button variant="outline" size="lg" className="text-base px-8">Jinsi Inavyofanya Kazi</Button>
-            </a>
+            <Link to="/maduka">
+              <Button variant="outline" size="lg" className="gap-2 text-base px-8">
+                <Eye className="h-5 w-5" /> Tazama Maduka
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -188,9 +192,9 @@ export default function Landing() {
       <section id="about" className="border-t py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Kwa Nini DukaSmart?</h2>
+            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Simamia Ndani, Tangaza Nje</h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Tumejengwa kwa ajili ya wafanyabiashara wa Tanzania. Rahisi, haraka, na yenye nguvu.
+              DukaSmart inakusaidia kusimamia biashara yako kwa ufanisi — na wakati huo huo duka lako linaonekana kwa wateja wapya mtandaoni.
             </p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
