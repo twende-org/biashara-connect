@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
+import ShopMap from "@/components/ShopMap";
 import { getAllShops, getProductsByShop } from "@/lib/firestore";
 import type { Shop, Product } from "@/types";
 
@@ -211,6 +212,18 @@ export default function ShopDetail() {
           </div>
         </div>
       </section>
+
+      {/* Map Section */}
+      {shop.location && (
+        <section className="border-b bg-background">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+            <h2 className="mb-3 flex items-center gap-2 text-lg font-bold text-foreground">
+              <MapPin className="h-5 w-5 text-primary" /> Mahali pa Duka
+            </h2>
+            <ShopMap location={shop.location} shopName={shop.name} className="h-[350px]" />
+          </div>
+        </section>
+      )}
 
       {/* Search & Category Tabs */}
       <div className="sticky top-16 z-40 border-b bg-background/95 backdrop-blur">
