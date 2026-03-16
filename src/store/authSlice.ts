@@ -26,6 +26,7 @@ const initialState: AuthState = {
 export const registerUser = createAsyncThunk(
   "auth/register",
   async ({ email, password, displayName }: { email: string; password: string; displayName: string }) => {
+    if (!auth) throw new Error("Firebase haijasanidiwa");
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await createUserProfile(cred.user.uid, { email, displayName });
     const profile = { id: cred.user.uid, email, displayName } as UserProfile;
@@ -36,6 +37,7 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/login",
   async ({ email, password }: { email: string; password: string }) => {
+    if (!auth) throw new Error("Firebase haijasanidiwa");
     const cred = await signInWithEmailAndPassword(auth, email, password);
     const profile = await getUserProfile(cred.user.uid);
     let roles: UserRole[] = [];
@@ -49,10 +51,12 @@ export const loginUser = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
+  if (!auth) throw new Error("Firebase haijasanidiwa");
   await signOut(auth);
 });
 
 export const resetPassword = createAsyncThunk("auth/resetPassword", async (email: string) => {
+  if (!auth) throw new Error("Firebase haijasanidiwa");
   await sendPasswordResetEmail(auth, email);
 });
 
