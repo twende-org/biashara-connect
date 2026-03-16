@@ -1,6 +1,6 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  TrendingUp, ShoppingCart, Package, AlertTriangle, DollarSign,
+  TrendingUp, ShoppingCart, Package, AlertTriangle, DollarSign, Activity, User, Clock,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -10,6 +10,7 @@ import { fetchProducts } from "@/store/productsSlice";
 import { fetchTodaySummary, fetchSummariesForRange, fetchSales } from "@/store/salesSlice";
 import { formatTZS } from "@/data/mockData";
 import { useUserRole } from "@/hooks/useUserRole";
+import { getActivityLogs, type ActivityLog } from "@/lib/activityLog";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
