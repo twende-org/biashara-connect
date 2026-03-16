@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchProducts } from "@/store/productsSlice";
 import { fetchTodaySummary, fetchSummariesForRange, fetchSales } from "@/store/salesSlice";
 import { formatTZS } from "@/data/mockData";
+import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
