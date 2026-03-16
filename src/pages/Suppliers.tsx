@@ -22,6 +22,7 @@ const defaultForm = { name: "", phone: "", email: "", address: "", products: "",
 export default function Suppliers() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
+  const { permissions } = useUserRole();
   const { suppliers, loading } = useAppSelector((s) => s.suppliers);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
