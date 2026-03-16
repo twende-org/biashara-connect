@@ -37,6 +37,7 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/login",
   async ({ email, password }: { email: string; password: string }) => {
+    if (!auth) throw new Error("Firebase haijasanidiwa");
     const cred = await signInWithEmailAndPassword(auth, email, password);
     const profile = await getUserProfile(cred.user.uid);
     let roles: UserRole[] = [];
