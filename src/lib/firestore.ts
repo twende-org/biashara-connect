@@ -66,6 +66,24 @@ export async function removeUserRole(userId: string, shopId: string) {
 }
 
 // ---- Shops ----
+
+/**
+ * Get ALL shops (public directory — no auth required).
+ */
+export async function getAllShops(): Promise<Shop[]> {
+  const snap = await getDocs(collection(getDb(), "shops"));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Shop));
+}
+
+/**
+ * Get all products for a shop (public).
+ */
+export async function getProductsByShop(shopId: string): Promise<Product[]> {
+  const q = query(collection(getDb(), "products"), where("shopId", "==", shopId));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product));
+}
+
 /**
  * Get all shops the user has access to (owned OR assigned via user_roles).
  */
