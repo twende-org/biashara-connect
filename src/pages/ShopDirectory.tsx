@@ -429,7 +429,7 @@ export default function ShopDirectory() {
                         )}
                         {shop.location && (
                           <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.location)}`}
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(shop.location + (shop.name ? " " + shop.name : ""))}&travelmode=driving`}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
