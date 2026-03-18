@@ -143,7 +143,7 @@ export default function Shops() {
                   className={`transition-all duration-300 cursor-pointer ${expandedMap === shop.id ? "h-[250px]" : "h-[120px]"}`}
                   onClick={() => setExpandedMap(expandedMap === shop.id ? null : shop.id)}
                 >
-                  <ShopMap location={shop.location} shopName={shop.name} className="h-full" />
+                  <ShopMap location={shop.location} shopName={shop.name} className="h-full" compact showActions={false} />
                 </div>
               )}
 

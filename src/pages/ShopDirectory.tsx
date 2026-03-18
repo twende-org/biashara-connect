@@ -364,7 +364,7 @@ export default function ShopDirectory() {
                     <div className="relative h-40 bg-gradient-to-br from-primary/5 via-muted to-primary/10 overflow-hidden">
                       {shop.location ? (
                         <div onClick={(e) => e.preventDefault()}>
-                          <ShopMap location={shop.location} shopName={shop.name} className="h-full rounded-none border-0" />
+                          <ShopMap location={shop.location} shopName={shop.name} className="h-full rounded-none border-0" compact showActions={false} />
                         </div>
                       ) : productImages.length > 0 ? (
                         <div className="grid h-full" style={{ gridTemplateColumns: `repeat(${Math.min(productImages.length, 4)}, 1fr)` }}>
