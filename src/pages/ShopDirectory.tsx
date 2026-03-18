@@ -350,52 +350,69 @@ export default function ShopDirectory() {
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredShops.map((shop) => {
-                // Get first few product images for preview
                 const productImages = shop.products
                   .filter((p) => p.imageUrl)
                   .slice(0, 4);
 
                 return (
-                  <div
+                  <Link
                     key={shop.id}
-                    className="group relative flex flex-col rounded-2xl border bg-card overflow-hidden transition-all duration-200 hover:shadow-lg hover:border-primary/30"
+                    to={`/maduka/${shop.id}`}
+                    className="group relative flex flex-col rounded-2xl border bg-card overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1"
                   >
-                    {/* Map + Product Images */}
-                    <div className="relative h-32 bg-muted">
+                    {/* Visual Header */}
+                    <div className="relative h-40 bg-gradient-to-br from-primary/5 via-muted to-primary/10 overflow-hidden">
                       {shop.location ? (
-                        <ShopMap location={shop.location} shopName={shop.name} className="h-full rounded-none border-0" />
+                        <div onClick={(e) => e.preventDefault()}>
+                          <ShopMap location={shop.location} shopName={shop.name} className="h-full rounded-none border-0" />
+                        </div>
                       ) : productImages.length > 0 ? (
-                        <div className="grid grid-cols-4 h-full">
+                        <div className="grid h-full" style={{ gridTemplateColumns: `repeat(${Math.min(productImages.length, 4)}, 1fr)` }}>
                           {productImages.map((p) => (
-                            <div key={p.id} className="overflow-hidden border-r last:border-r-0 border-background/20">
-                              <img src={p.imageUrl!} alt={p.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                            <div key={p.id} className="overflow-hidden border-r last:border-r-0 border-background/10">
+                              <img src={p.imageUrl!} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             </div>
                           ))}
                         </div>
                       ) : (
                         <div className="flex h-full items-center justify-center">
-                          <Store className="h-10 w-10 text-muted-foreground/20" />
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                            <Store className="h-8 w-8 text-primary/40" />
+                          </div>
                         </div>
                       )}
+
+                      {/* Product count badge */}
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[11px] font-semibold text-foreground shadow-sm border border-border/50">
+                          <Package className="h-3 w-3 text-primary" /> {shop.productCount}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Shop Info */}
-                    <div className="p-5 flex flex-col flex-1">
-                      <Link to={`/maduka/${shop.id}`} className="group/link">
-                        <h3 className="text-xl font-bold text-foreground group-hover/link:text-primary transition-colors">
-                          {shop.name}
-                        </h3>
-                      </Link>
+                    {/* Content */}
+                    <div className="flex flex-1 flex-col p-5">
+                      {/* Shop name & location */}
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                          <Store className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                            {shop.name}
+                          </h3>
+                          {shop.location && (
+                            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground truncate">
+                              <MapPin className="h-3 w-3 shrink-0 text-primary/70" />
+                              {shop.location}
+                            </p>
+                          )}
+                        </div>
+                      </div>
 
-                      {shop.location && (
-                        <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
-                          <span className="truncate">{shop.location}</span>
-                        </p>
-                      )}
-
+                      {/* Description */}
                       {shop.description && (
-                        <p className="mt-2 text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                        <p className="mt-3 text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                           {shop.description}
                         </p>
                       )}
@@ -404,38 +421,40 @@ export default function ShopDirectory() {
                       {shop.categories.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {shop.categories.slice(0, 3).map((cat) => (
-                            <Badge key={cat} variant="secondary" className="text-xs">
+                            <span
+                              key={cat}
+                              className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+                            >
                               {cat}
-                            </Badge>
+                            </span>
                           ))}
                           {shop.categories.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
+                            <span className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                               +{shop.categories.length - 3}
-                            </Badge>
+                            </span>
                           )}
                         </div>
                       )}
 
-                      {/* Quick Actions Bar */}
-                      <div className="mt-auto pt-4 border-t mt-4 flex items-center gap-2">
-                        {shop.phone && (
+                      {/* Footer actions */}
+                      <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-4 mt-4">
+                        {shop.phone ? (
                           <a
                             href={`tel:${shop.phone}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
                           >
                             <Phone className="h-3.5 w-3.5" /> Piga Simu
                           </a>
+                        ) : (
+                          <span />
                         )}
-                        <Link
-                          to={`/maduka/${shop.id}`}
-                          className="ml-auto flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          Bidhaa {shop.productCount} <ArrowRight className="h-3.5 w-3.5" />
-                        </Link>
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                          Tazama bidhaa <ArrowRight className="h-3.5 w-3.5" />
+                        </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
