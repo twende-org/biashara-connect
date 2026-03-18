@@ -195,7 +195,7 @@ export default function ShopDetail() {
               {shop.location && (
                 <a
                   href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodeURIComponent(shop.location + (shop.name ? " " + shop.name : ""))}&travelmode=driving`}
-                  target="_top"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-background px-5 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
                 >
