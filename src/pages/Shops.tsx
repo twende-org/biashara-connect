@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2, Store, Loader2 } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Store, Loader2, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchShops, createShop, editShop, removeShop } from "@/store/shopsSlice";
 import { assignUserRole } from "@/lib/firestore";
 import { toast } from "sonner";
+import ShopMap from "@/components/ShopMap";
 
 export default function Shops() {
   const dispatch = useAppDispatch();
@@ -22,9 +24,10 @@ export default function Shops() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<any>(null);
-  const [form, setForm] = useState({ name: "", location: "" });
+  const [form, setForm] = useState({ name: "", location: "", phone: "", description: "" });
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [expandedMap, setExpandedMap] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.id) dispatch(fetchShops(user.id));
@@ -52,7 +55,7 @@ export default function Shops() {
       setTimeout(() => {
         setDialogOpen(false);
         setEditingShop(null);
-        setForm({ name: "", location: "" });
+        setForm({ name: "", location: "", phone: "", description: "" });
         setProgress(0);
       }, 300);
     } catch (err: any) {
@@ -63,7 +66,7 @@ export default function Shops() {
 
   const handleEdit = (shop: any) => {
     setEditingShop(shop);
-    setForm({ name: shop.name, location: shop.location });
+    setForm({ name: shop.name, location: shop.location || "", phone: shop.phone || "", description: shop.description || "" });
     setDialogOpen(true);
   };
 
@@ -79,11 +82,11 @@ export default function Shops() {
           <h1 className="page-title">Maduka</h1>
           <p className="page-description">Simamia maduka yako yote</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingShop(null); setForm({ name: "", location: "" }); setProgress(0); } }}>
+        <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingShop(null); setForm({ name: "", location: "", phone: "", description: "" }); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />Ongeza Duka</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>{editingShop ? "Hariri Duka" : "Ongeza Duka Jipya"}</DialogTitle>
             </DialogHeader>
@@ -91,11 +94,24 @@ export default function Shops() {
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Jina la Duka</label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="Mfano: Duka la Mama Amina" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Mahali</label>
-                <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required />
+                <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required placeholder="Mfano: Dodoma, Tanzania" />
+                <p className="text-xs text-muted-foreground mt-1">Andika anwani kamili kwa ramani sahihi</p>
+              </div>
+              {/* Map Preview in Form */}
+              {form.location.length > 3 && (
+                <ShopMap location={form.location} shopName={form.name || undefined} className="h-[200px]" />
+              )}
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Simu</label>
+                <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Mfano: +255 712 345 678" />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Maelezo</label>
+                <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Elezea duka lako kwa ufupi..." rows={2} />
               </div>
               <Button type="submit" className="w-full" disabled={submitting}>
                 {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Inaendelea...</> : (editingShop ? "Sasisha" : "Ongeza")}
@@ -120,22 +136,46 @@ export default function Shops() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((shop) => (
-            <div key={shop.id} className="stat-card">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Store className="h-5 w-5 text-primary" />
+            <div key={shop.id} className="stat-card overflow-hidden">
+              {/* Map Preview */}
+              {shop.location && (
+                <div
+                  className={`transition-all duration-300 cursor-pointer ${expandedMap === shop.id ? "h-[250px]" : "h-[120px]"}`}
+                  onClick={() => setExpandedMap(expandedMap === shop.id ? null : shop.id)}
+                >
+                  <ShopMap location={shop.location} shopName={shop.name} className="h-full" />
                 </div>
-                <div className="flex gap-1">
-                  <button onClick={() => handleEdit(shop)} className="rounded-lg p-1.5 hover:bg-muted transition-colors">
-                    <Edit className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  <button onClick={() => handleDelete(shop.id)} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors">
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </button>
+              )}
+
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <Store className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex gap-1">
+                    <button onClick={() => handleEdit(shop)} className="rounded-lg p-1.5 hover:bg-muted transition-colors">
+                      <Edit className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                    <button onClick={() => handleDelete(shop.id)} className="rounded-lg p-1.5 hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </button>
+                  </div>
                 </div>
+                <h3 className="font-semibold text-foreground">{shop.name}</h3>
+                {shop.location && (
+                  <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+                    <MapPin className="h-3.5 w-3.5 text-primary" /> {shop.location}
+                  </p>
+                )}
+                {shop.phone && (
+                  <p className="text-sm text-muted-foreground mt-0.5 flex items-center gap-1">
+                    <Phone className="h-3.5 w-3.5 text-primary" /> {shop.phone}
+                  </p>
+                )}
+                {shop.description && (
+                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{shop.description}</p>
+                )}
               </div>
-              <h3 className="font-semibold text-foreground">{shop.name}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{shop.location}</p>
             </div>
           ))}
         </div>
