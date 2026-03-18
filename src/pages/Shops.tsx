@@ -17,6 +17,25 @@ import { assignUserRole } from "@/lib/firestore";
 import { toast } from "sonner";
 import ShopMap from "@/components/ShopMap";
 
+/** Geocode a text location to lat/lon using Nominatim (free, no key). */
+async function geocode(query: string): Promise<{ lat: number; lon: number } | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`,
+      { headers: { Accept: "application/json" } },
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as Array<{ lat: string; lon: string }>;
+    if (!data.length) return null;
+    const lat = Number(data[0].lat);
+    const lon = Number(data[0].lon);
+    if (Number.isNaN(lat) || Number.isNaN(lon)) return null;
+    return { lat, lon };
+  } catch {
+    return null;
+  }
+}
+
 export default function Shops() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
@@ -42,14 +61,27 @@ export default function Shops() {
     setSubmitting(true);
     setProgress(30);
     try {
-      setProgress(60);
+      // Geocode the location to get coordinates
+      setProgress(50);
+      const coords = form.location ? await geocode(form.location) : null;
+      setProgress(70);
+
+      const shopData = {
+        ...form,
+        ...(coords ? { lat: coords.lat, lon: coords.lon } : {}),
+      };
+
       if (editingShop) {
-        await dispatch(editShop({ id: editingShop.id, data: form })).unwrap();
+        await dispatch(editShop({ id: editingShop.id, data: shopData })).unwrap();
         toast.success("Duka limesasishwa!");
       } else {
-        const result = await dispatch(createShop({ ...form, ownerId: user!.id })).unwrap();
+        const result = await dispatch(createShop({ ...shopData, ownerId: user!.id })).unwrap();
         await assignUserRole(user!.id, result.id, "owner");
-        toast.success("Duka limeongezwa!");
+        toast.success(
+          coords
+            ? `Duka limeongezwa! Mahali: ${coords.lat.toFixed(4)}, ${coords.lon.toFixed(4)}`
+            : "Duka limeongezwa!"
+        );
       }
       setProgress(100);
       setTimeout(() => {
@@ -99,11 +131,11 @@ export default function Shops() {
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Mahali</label>
                 <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required placeholder="Mfano: Dodoma, Tanzania" />
-                <p className="text-xs text-muted-foreground mt-1">Andika anwani kamili kwa ramani sahihi</p>
+                <p className="text-xs text-muted-foreground mt-1">Andika anwani kamili — tutapata coordinates kupitia Google Maps</p>
               </div>
               {/* Map Preview in Form */}
               {form.location.length > 3 && (
-                <ShopMap location={form.location} shopName={form.name || undefined} className="h-[200px]" />
+                <ShopMap location={form.location} shopName={form.name || undefined} className="h-[200px]" compact />
               )}
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Simu</label>
@@ -140,10 +172,18 @@ export default function Shops() {
               {/* Map Preview */}
               {shop.location && (
                 <div
-                  className={`transition-all duration-300 cursor-pointer ${expandedMap === shop.id ? "h-[250px]" : "h-[120px]"}`}
+                  className={`transition-all duration-300 cursor-pointer ${expandedMap === shop.id ? "h-[250px]" : "h-[140px]"}`}
                   onClick={() => setExpandedMap(expandedMap === shop.id ? null : shop.id)}
                 >
-                  <ShopMap location={shop.location} shopName={shop.name} className="h-full" compact showActions={false} />
+                  <ShopMap
+                    location={shop.location}
+                    shopName={shop.name}
+                    lat={shop.lat}
+                    lon={shop.lon}
+                    className="h-full"
+                    compact
+                    showActions={expandedMap === shop.id}
+                  />
                 </div>
               )}
 
@@ -165,6 +205,11 @@ export default function Shops() {
                 {shop.location && (
                   <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
                     <MapPin className="h-3.5 w-3.5 text-primary" /> {shop.location}
+                  </p>
+                )}
+                {shop.lat && shop.lon && (
+                  <p className="text-xs text-muted-foreground/60 mt-0.5 ml-5">
+                    {shop.lat.toFixed(4)}, {shop.lon.toFixed(4)}
                   </p>
                 )}
                 {shop.phone && (
