@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
-import ShopMap from "@/components/ShopMap";
+
 import { getAllShops, getProductsByShop } from "@/lib/firestore";
 import type { Shop, Product } from "@/types";
 
@@ -352,59 +352,89 @@ export default function ShopDirectory() {
               {filteredShops.map((shop) => {
                 const productImages = shop.products
                   .filter((p) => p.imageUrl)
-                  .slice(0, 4);
+                  .slice(0, 3);
+
+                const encodedDest = encodeURIComponent(
+                  shop.location + (shop.name ? " " + shop.name : "")
+                );
+                const directionsLink = `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodedDest}&travelmode=driving`;
 
                 return (
-                  <Link
+                  <div
                     key={shop.id}
-                    to={`/maduka/${shop.id}`}
-                    className="group relative flex flex-col rounded-2xl border bg-card overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1"
+                    className="group relative flex flex-col rounded-2xl border bg-card overflow-hidden shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary/8 hover:border-primary/30 hover:-translate-y-1"
                   >
-                    {/* Visual Header */}
-                    <div className="relative h-40 bg-gradient-to-br from-primary/5 via-muted to-primary/10 overflow-hidden">
-                      {shop.location ? (
-                        <div onClick={(e) => e.preventDefault()}>
-                          <ShopMap location={shop.location} shopName={shop.name} className="h-full rounded-none border-0" compact showActions={false} />
-                        </div>
-                      ) : productImages.length > 0 ? (
-                        <div className="grid h-full" style={{ gridTemplateColumns: `repeat(${Math.min(productImages.length, 4)}, 1fr)` }}>
+                    {/* Card Header — gradient with product thumbnails or icon */}
+                    <div className="relative h-36 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 overflow-hidden">
+                      {productImages.length > 0 ? (
+                        <div
+                          className="grid h-full"
+                          style={{
+                            gridTemplateColumns: `repeat(${productImages.length}, 1fr)`,
+                          }}
+                        >
                           {productImages.map((p) => (
-                            <div key={p.id} className="overflow-hidden border-r last:border-r-0 border-background/10">
-                              <img src={p.imageUrl!} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                            <div
+                              key={p.id}
+                              className="overflow-hidden border-r last:border-r-0 border-white/10"
+                            >
+                              <img
+                                src={p.imageUrl!}
+                                alt={p.name}
+                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              />
                             </div>
                           ))}
                         </div>
                       ) : (
                         <div className="flex h-full items-center justify-center">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-                            <Store className="h-8 w-8 text-primary/40" />
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background/60 backdrop-blur-sm shadow-sm">
+                            <Store className="h-8 w-8 text-primary" />
                           </div>
                         </div>
                       )}
 
-                      {/* Product count badge */}
-                      <div className="absolute top-3 right-3 z-10">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[11px] font-semibold text-foreground shadow-sm border border-border/50">
-                          <Package className="h-3 w-3 text-primary" /> {shop.productCount}
+                      {/* Floating badges */}
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[11px] font-bold text-foreground shadow-sm border border-border/40">
+                          <Package className="h-3 w-3 text-primary" />
+                          {shop.productCount} bidhaa
                         </span>
                       </div>
+
+                      {shop.location && (
+                        <div className="absolute top-3 right-3 z-10">
+                          <a
+                            href={directionsLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground shadow-md transition-transform hover:scale-105"
+                          >
+                            <Navigation className="h-3 w-3" /> Ongozwa
+                          </a>
+                        </div>
+                      )}
+
+                      {/* Bottom gradient overlay */}
+                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent" />
                     </div>
 
-                    {/* Content */}
-                    <div className="flex flex-1 flex-col p-5">
-                      {/* Shop name & location */}
+                    {/* Card Body */}
+                    <div className="flex flex-1 flex-col px-5 pb-5 -mt-2 relative z-10">
+                      {/* Shop Icon + Name */}
                       <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-2 ring-background shadow-sm transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                           <Store className="h-5 w-5" />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <h3 className="text-[15px] font-extrabold text-foreground leading-tight group-hover:text-primary transition-colors truncate">
                             {shop.name}
                           </h3>
                           {shop.location && (
-                            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground truncate">
-                              <MapPin className="h-3 w-3 shrink-0 text-primary/70" />
-                              {shop.location}
+                            <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                              <MapPin className="h-3 w-3 shrink-0 text-primary/60" />
+                              <span className="truncate">{shop.location}</span>
                             </p>
                           )}
                         </div>
@@ -412,7 +442,7 @@ export default function ShopDirectory() {
 
                       {/* Description */}
                       {shop.description && (
-                        <p className="mt-3 text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                        <p className="mt-3 text-[13px] text-muted-foreground line-clamp-2 leading-relaxed">
                           {shop.description}
                         </p>
                       )}
@@ -423,38 +453,41 @@ export default function ShopDirectory() {
                           {shop.categories.slice(0, 3).map((cat) => (
                             <span
                               key={cat}
-                              className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+                              className="rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-semibold text-secondary-foreground"
                             >
                               {cat}
                             </span>
                           ))}
                           {shop.categories.length > 3 && (
-                            <span className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                               +{shop.categories.length - 3}
                             </span>
                           )}
                         </div>
                       )}
 
-                      {/* Footer actions */}
-                      <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-4 mt-4">
-                        {shop.phone ? (
-                          <a
-                            href={`tel:${shop.phone}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-                          >
-                            <Phone className="h-3.5 w-3.5" /> Piga Simu
-                          </a>
-                        ) : (
-                          <span />
-                        )}
-                        <span className="inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                          Tazama bidhaa <ArrowRight className="h-3.5 w-3.5" />
-                        </span>
+                      {/* Footer */}
+                      <div className="mt-auto flex items-center justify-between border-t border-border/40 pt-3.5 mt-4">
+                        <div className="flex items-center gap-2">
+                          {shop.phone && (
+                            <a
+                              href={`tel:${shop.phone}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                            >
+                              <Phone className="h-3.5 w-3.5" /> Piga Simu
+                            </a>
+                          )}
+                        </div>
+                        <Link
+                          to={`/maduka/${shop.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
+                        >
+                          Tazama <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                        </Link>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
