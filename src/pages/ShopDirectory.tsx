@@ -360,23 +360,23 @@ export default function ShopDirectory() {
                     key={shop.id}
                     className="group relative flex flex-col rounded-2xl border bg-card overflow-hidden transition-all duration-200 hover:shadow-lg hover:border-primary/30"
                   >
-                    {/* Product Image Preview Strip */}
-                    <div className="grid grid-cols-4 h-28 bg-muted">
-                      {productImages.length > 0
-                        ? productImages.map((p, i) => (
+                    {/* Map + Product Images */}
+                    <div className="relative h-32 bg-muted">
+                      {shop.location ? (
+                        <ShopMap location={shop.location} shopName={shop.name} className="h-full rounded-none border-0" />
+                      ) : productImages.length > 0 ? (
+                        <div className="grid grid-cols-4 h-full">
+                          {productImages.map((p) => (
                             <div key={p.id} className="overflow-hidden border-r last:border-r-0 border-background/20">
-                              <img
-                                src={p.imageUrl!}
-                                alt={p.name}
-                                className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                              />
-                            </div>
-                          ))
-                        : [...Array(4)].map((_, i) => (
-                            <div key={i} className="flex items-center justify-center border-r last:border-r-0 border-background/20">
-                              <Package className="h-6 w-6 text-muted-foreground/20" />
+                              <img src={p.imageUrl!} alt={p.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                             </div>
                           ))}
+                        </div>
+                      ) : (
+                        <div className="flex h-full items-center justify-center">
+                          <Store className="h-10 w-10 text-muted-foreground/20" />
+                        </div>
+                      )}
                     </div>
 
                     {/* Shop Info */}
