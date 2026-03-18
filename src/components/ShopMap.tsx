@@ -4,6 +4,8 @@ import { ExternalLink, MapPin, Navigation } from "lucide-react";
 interface ShopMapProps {
   location: string;
   shopName?: string;
+  lat?: number;
+  lon?: number;
   className?: string;
   compact?: boolean;
   showActions?: boolean;
@@ -12,6 +14,8 @@ interface ShopMapProps {
 export default function ShopMap({
   location,
   shopName,
+  lat,
+  lon,
   className = "",
   compact = false,
   showActions = true,
@@ -21,32 +25,35 @@ export default function ShopMap({
     [location, shopName],
   );
 
-  const encodedQuery = useMemo(() => encodeURIComponent(locationQuery), [locationQuery]);
+  const hasCoords = typeof lat === "number" && typeof lon === "number";
 
-  const mapEmbedLink = useMemo(
-    () => `https://www.google.com/maps?q=${encodedQuery}&z=15&output=embed`,
-    [encodedQuery],
-  );
+  // Google Maps embed — place mode uses q= param, no API key needed
+  const mapEmbedSrc = useMemo(() => {
+    const q = hasCoords ? `${lat},${lon}` : encodeURIComponent(locationQuery);
+    return `https://maps.google.com/maps?q=${q}&z=15&output=embed`;
+  }, [hasCoords, lat, lon, locationQuery]);
+
+  const destination = hasCoords ? `${lat},${lon}` : locationQuery;
 
   const directionsLink = useMemo(
     () =>
-      `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodedQuery}&travelmode=driving`,
-    [encodedQuery],
+      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving`,
+    [destination],
   );
 
   const googleMapsLink = useMemo(
-    () => `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`,
-    [encodedQuery],
+    () => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination)}`,
+    [destination],
   );
 
-  const mapTitle = `Google Map${shopName ? ` - ${shopName}` : ""}`;
+  const mapTitle = `Ramani${shopName ? ` - ${shopName}` : ""}`;
 
   if (compact) {
     return (
       <div className={`overflow-hidden rounded-xl border bg-card ${className}`}>
         <div className="relative h-full min-h-[120px]">
           <iframe
-            src={mapEmbedLink}
+            src={mapEmbedSrc}
             title={mapTitle}
             className="h-full w-full border-0"
             loading="lazy"
@@ -54,8 +61,8 @@ export default function ShopMap({
             allowFullScreen
           />
 
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background/80 to-transparent" />
-
+          {/* Top label */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-background/70 to-transparent" />
           <div className="pointer-events-none absolute left-2 top-2 inline-flex max-w-[80%] items-center gap-1 rounded-full border border-border/50 bg-background/90 px-2.5 py-1 text-[11px] font-semibold text-foreground backdrop-blur-sm">
             <MapPin className="h-3 w-3 shrink-0 text-primary" />
             <span className="truncate">{shopName || location}</span>
@@ -67,7 +74,7 @@ export default function ShopMap({
                 href={directionsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-[10px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-[10px] font-semibold text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
               >
                 <Navigation className="h-3 w-3" /> Ongozwa
               </a>
@@ -80,18 +87,20 @@ export default function ShopMap({
 
   return (
     <div className={`overflow-hidden rounded-xl border bg-card ${className}`}>
+      {/* Embedded Map */}
       <div className="relative h-56 border-b bg-muted">
         <iframe
-          src={mapEmbedLink}
+          src={mapEmbedSrc}
           title={mapTitle}
           className="h-full w-full border-0"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background/85 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent" />
       </div>
 
+      {/* Info & Actions */}
       <div className="space-y-4 p-5">
         <div className="flex items-start gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10">
@@ -103,11 +112,16 @@ export default function ShopMap({
               <MapPin className="h-3.5 w-3.5 shrink-0 text-primary/70" />
               <span className="truncate">{location}</span>
             </p>
+            {hasCoords && (
+              <p className="mt-1 text-xs text-muted-foreground/70">
+                {lat!.toFixed(5)}, {lon!.toFixed(5)}
+              </p>
+            )}
           </div>
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Bonyeza Ongozwa kupata njia ya Google Maps kutoka ulipo sasa hadi dukani.
+          Bonyeza "Ongozwa" kupata njia ya Google Maps kutoka ulipo sasa hadi dukani.
         </p>
 
         {showActions && (

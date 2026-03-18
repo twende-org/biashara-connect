@@ -354,10 +354,10 @@ export default function ShopDirectory() {
                   .filter((p) => p.imageUrl)
                   .slice(0, 3);
 
-                const encodedDest = encodeURIComponent(
-                  shop.location + (shop.name ? " " + shop.name : "")
-                );
-                const directionsLink = `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodedDest}&travelmode=driving`;
+                const dest = shop.lat && shop.lon
+                  ? `${shop.lat},${shop.lon}`
+                  : shop.location + (shop.name ? " " + shop.name : "");
+                const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}&travelmode=driving`;
 
                 return (
                   <div

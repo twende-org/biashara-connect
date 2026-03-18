@@ -194,7 +194,11 @@ export default function ShopDetail() {
               )}
               {shop.location && (
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodeURIComponent(shop.location + (shop.name ? " " + shop.name : ""))}&travelmode=driving`}
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                    shop.lat && shop.lon
+                      ? `${shop.lat},${shop.lon}`
+                      : shop.location + (shop.name ? " " + shop.name : "")
+                  )}&travelmode=driving`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-background px-5 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
@@ -220,7 +224,7 @@ export default function ShopDetail() {
             <h2 className="mb-3 flex items-center gap-2 text-lg font-bold text-foreground">
               <MapPin className="h-5 w-5 text-primary" /> Mahali pa Duka
             </h2>
-            <ShopMap location={shop.location} shopName={shop.name} className="h-[350px]" />
+            <ShopMap location={shop.location} shopName={shop.name} lat={shop.lat} lon={shop.lon} className="h-[350px]" />
           </div>
         </section>
       )}

@@ -6,6 +6,8 @@ export interface Shop {
   phone?: string;
   description?: string;
   salesTotal?: number;
+  lat?: number;
+  lon?: number;
 }
 
 export interface Product {
