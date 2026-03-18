@@ -427,17 +427,6 @@ export default function ShopDirectory() {
                             <Phone className="h-3.5 w-3.5" /> Piga Simu
                           </a>
                         )}
-                        {shop.location && (
-                          <a
-                            href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodeURIComponent(shop.location + (shop.name ? " " + shop.name : ""))}&travelmode=driving`}
-                            target="_top"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-colors border border-primary/30"
-                          >
-                            <Navigation className="h-3.5 w-3.5" /> Ongozwa
-                          </a>
-                        )}
                         <Link
                           to={`/maduka/${shop.id}`}
                           className="ml-auto flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
