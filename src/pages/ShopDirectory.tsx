@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
-import ShopMap from "@/components/ShopMap";
+
 import { getAllShops, getProductsByShop } from "@/lib/firestore";
 import type { Shop, Product } from "@/types";
 
