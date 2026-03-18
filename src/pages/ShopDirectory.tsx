@@ -429,8 +429,8 @@ export default function ShopDirectory() {
                         )}
                         {shop.location && (
                           <a
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(shop.location + (shop.name ? " " + shop.name : ""))}&travelmode=driving`}
-                            target="_blank"
+                            href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodeURIComponent(shop.location + (shop.name ? " " + shop.name : ""))}&travelmode=driving`}
+                            target="_top"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
                             className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-colors border border-primary/30"
