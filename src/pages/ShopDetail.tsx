@@ -224,7 +224,7 @@ export default function ShopDetail() {
             <h2 className="mb-3 flex items-center gap-2 text-lg font-bold text-foreground">
               <MapPin className="h-5 w-5 text-primary" /> Mahali pa Duka
             </h2>
-            <ShopMap location={shop.location} shopName={shop.name} lat={shop.lat} lon={shop.lon} className="h-[350px]" />
+            <ShopMap location={shop.location} shopName={shop.name} lat={shop.lat} lon={shop.lon} className="min-h-[350px]" />
           </div>
         </section>
       )}
