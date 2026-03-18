@@ -42,7 +42,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
   }
 
   return (
-    <div className={`overflow-hidden rounded-xl border bg-card ${className}`}>
+    <div className={`relative overflow-hidden rounded-xl border bg-card ${className}`}>
       <iframe
         src={leafletSrc}
         width="100%"
