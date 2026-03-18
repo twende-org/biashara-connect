@@ -31,7 +31,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a
               href={directionsLink}
-              target="_top"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
@@ -39,7 +39,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
             </a>
             <a
               href={mapsLink}
-              target="_top"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
             >
@@ -69,7 +69,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
       <div className="absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between gap-2">
         <a
           href={directionsLink}
-          target="_top"
+          target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 sm:text-sm"
         >
@@ -77,7 +77,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
         </a>
         <a
           href={mapsLink}
-          target="_top"
+          target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 rounded-lg border bg-background/90 px-3 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-background"
         >
