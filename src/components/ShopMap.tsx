@@ -5,6 +5,8 @@ interface ShopMapProps {
   location: string;
   shopName?: string;
   className?: string;
+  compact?: boolean;
+  showActions?: boolean;
 }
 
 interface Coordinates {
@@ -12,7 +14,13 @@ interface Coordinates {
   lon: number;
 }
 
-export default function ShopMap({ location, shopName, className = "" }: ShopMapProps) {
+export default function ShopMap({
+  location,
+  shopName,
+  className = "",
+  compact = false,
+  showActions = true,
+}: ShopMapProps) {
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [isResolving, setIsResolving] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -23,18 +31,6 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
   );
 
   const encodedQuery = encodeURIComponent(locationQuery);
-  const openStreetMapSearchLink = `https://www.openstreetmap.org/search?query=${encodedQuery}`;
-
-  const openStreetMapPlaceLink = coordinates
-    ? `https://www.openstreetmap.org/?mlat=${coordinates.lat}&mlon=${coordinates.lon}#map=16/${coordinates.lat}/${coordinates.lon}`
-    : openStreetMapSearchLink;
-
-  const embedSrc = useMemo(() => {
-    if (!coordinates) return "";
-    const delta = 0.01;
-    const bbox = `${coordinates.lon - delta},${coordinates.lat - delta},${coordinates.lon + delta},${coordinates.lat + delta}`;
-    return `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${coordinates.lat},${coordinates.lon}`;
-  }, [coordinates]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -42,16 +38,13 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
     const resolveCoordinates = async () => {
       setIsResolving(true);
       setHasError(false);
-      setCoordinates(null);
 
       try {
         const response = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodedQuery}`,
           {
             signal: controller.signal,
-            headers: {
-              Accept: "application/json",
-            },
+            headers: { Accept: "application/json" },
           }
         );
 
@@ -62,6 +55,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
         const data = (await response.json()) as Array<{ lat: string; lon: string }>;
 
         if (!data.length) {
+          setCoordinates(null);
           setHasError(true);
           return;
         }
@@ -70,6 +64,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
         const lon = Number(data[0].lon);
 
         if (Number.isNaN(lat) || Number.isNaN(lon)) {
+          setCoordinates(null);
           setHasError(true);
           return;
         }
@@ -77,6 +72,7 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
         setCoordinates({ lat, lon });
       } catch (error) {
         if ((error as Error).name !== "AbortError") {
+          setCoordinates(null);
           setHasError(true);
         }
       } finally {
@@ -85,122 +81,103 @@ export default function ShopMap({ location, shopName, className = "" }: ShopMapP
     };
 
     void resolveCoordinates();
-
     return () => controller.abort();
   }, [encodedQuery]);
 
-  const openExternalUrl = (url: string) => {
-    const newTab = window.open(url, "_blank", "noopener,noreferrer");
-    if (!newTab) {
-      window.location.href = url;
-    }
-  };
+  const destination = coordinates ? `${coordinates.lat},${coordinates.lon}` : locationQuery;
+  const directionsLink = `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${encodeURIComponent(destination)}&travelmode=driving`;
+  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination)}`;
+  const osmLink = `https://www.openstreetmap.org/search?query=${encodedQuery}`;
 
-  const handleNavigate = async () => {
-    if (!coordinates) {
-      openExternalUrl(openStreetMapPlaceLink);
-      return;
-    }
-
-    if (!navigator.geolocation) {
-      openExternalUrl(openStreetMapPlaceLink);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const origin = `${position.coords.latitude},${position.coords.longitude}`;
-        const destination = `${coordinates.lat},${coordinates.lon}`;
-        const route = encodeURIComponent(`${origin};${destination}`);
-        const directionsLink = `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${route}`;
-        openExternalUrl(directionsLink);
-      },
-      () => {
-        openExternalUrl(openStreetMapPlaceLink);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000,
-      }
-    );
-  };
-
-  if (isResolving) {
+  if (compact) {
     return (
       <div className={`overflow-hidden rounded-xl border bg-card ${className}`}>
-        <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-3 p-6 text-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <p className="text-sm font-medium text-foreground">Tunatafuta mahali pa duka...</p>
-          <p className="text-xs text-muted-foreground">{locationQuery}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (hasError || !coordinates) {
-    return (
-      <div className={`overflow-hidden rounded-xl border bg-card ${className}`}>
-        <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-4 p-6 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-            <MapPin className="h-7 w-7 text-primary" />
+        <div className="flex h-full flex-col items-center justify-center gap-2 p-3 text-center">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+            {isResolving ? (
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            ) : (
+              <MapPin className="h-5 w-5 text-primary" />
+            )}
           </div>
-          <div>
-            <p className="text-lg font-bold text-foreground">{shopName || "Duka"}</p>
-            <p className="mt-1 flex items-center justify-center gap-1 text-sm text-muted-foreground">
-              <MapPin className="h-3.5 w-3.5" /> {location}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleNavigate}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            <Navigation className="h-4 w-4" /> Ongozwa hadi Dukani
-          </button>
-          <a
-            href={openStreetMapPlaceLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-          >
-            <ExternalLink className="h-4 w-4" /> Fungua Ramani
-          </a>
+          <p className="line-clamp-1 text-xs font-semibold text-foreground">{shopName || "Mahali pa duka"}</p>
+          <p className="line-clamp-1 text-[11px] text-muted-foreground">{location}</p>
+          {showActions && (
+            <a
+              href={directionsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-[10px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              <Navigation className="h-3 w-3" /> Ongozwa
+            </a>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-xl border bg-card ${className}`}>
-      <iframe
-        src={embedSrc}
-        width="100%"
-        height="100%"
-        style={{ border: 0, minHeight: 200 }}
-        loading="lazy"
-        allowFullScreen
-        referrerPolicy="no-referrer"
-        title={`Ramani - ${shopName || location}`}
-        onError={() => setHasError(true)}
-      />
+    <div className={`overflow-hidden rounded-xl border bg-card ${className}`}>
+      <div className="flex h-full min-h-[220px] flex-col justify-between p-5">
+        <div className="space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10">
+              {isResolving ? (
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              ) : (
+                <MapPin className="h-5 w-5 text-primary" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-base font-bold text-foreground">{shopName || "Duka"}</p>
+              <p className="mt-0.5 flex items-center gap-1 text-sm text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-primary/70" />
+                <span className="truncate">{location}</span>
+              </p>
+              {coordinates && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Lat: {coordinates.lat.toFixed(5)}, Lon: {coordinates.lon.toFixed(5)}
+                </p>
+              )}
+            </div>
+          </div>
 
-      <div className="absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={handleNavigate}
-          className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 sm:text-sm"
-        >
-          <Navigation className="h-4 w-4" /> Ongozwa hadi Dukani
-        </button>
-        <a
-          href={openStreetMapPlaceLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-lg border bg-background/90 px-3 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-background"
-        >
-          <ExternalLink className="h-3.5 w-3.5" /> Fungua Ramani
-        </a>
+          <p className="text-xs text-muted-foreground">
+            {hasError
+              ? "Hatujaweza kupakia ramani ya ndani ya app, lakini maelekezo ya safari bado yapo tayari."
+              : "Bonyeza Ongozwa kupata njia kutoka ulipo sasa hadi dukani."}
+          </p>
+        </div>
+
+        {showActions && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            <a
+              href={directionsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              <Navigation className="h-4 w-4" /> Ongozwa hadi Dukani
+            </a>
+            <a
+              href={googleMapsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+            >
+              <ExternalLink className="h-4 w-4" /> Fungua Google Maps
+            </a>
+            <a
+              href={osmLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+            >
+              <ExternalLink className="h-4 w-4" /> OSM Fallback
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
