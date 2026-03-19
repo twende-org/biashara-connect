@@ -361,7 +361,7 @@ export default function Products() {
         <Select value={filterCategory} onValueChange={setFilterCategory}>
           <SelectTrigger className="w-[160px]"><SelectValue placeholder="Aina..." /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Aina Zote</SelectItem>
+            <SelectItem value="all">{t("products.allCategories")}</SelectItem>
             {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
