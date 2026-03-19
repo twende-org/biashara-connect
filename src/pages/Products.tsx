@@ -428,7 +428,7 @@ export default function Products() {
             </thead>
             <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={7} className="py-8 text-center text-muted-foreground">Hakuna bidhaa bado</td></tr>
+                <tr><td colSpan={7} className="py-8 text-center text-muted-foreground">{t("products.noProducts")}</td></tr>
               ) : filtered.map((p) => (
                 <tr key={p.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
                   <td className="py-3">
