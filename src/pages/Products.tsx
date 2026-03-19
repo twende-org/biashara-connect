@@ -466,8 +466,8 @@ export default function Products() {
             </tbody>
           </table>
           <div className="flex items-center justify-between border-t pt-3 mt-2 text-xs text-muted-foreground">
-            <span>Jumla: {filtered.length} bidhaa</span>
-            <span>Thamani ya Stoo: {formatTZS(filtered.reduce((sum, p) => sum + p.sellingPrice * p.stock, 0))}</span>
+            <span>{t("products.total")}: {filtered.length} {t("products.title").toLowerCase()}</span>
+            <span>{t("products.stockValue")}: {formatTZS(filtered.reduce((sum, p) => sum + p.sellingPrice * p.stock, 0))}</span>
           </div>
         </div>
       )}
