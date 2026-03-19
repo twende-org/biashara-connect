@@ -379,7 +379,7 @@ export default function Products() {
       {/* Product detail dialog */}
       <Dialog open={!!detailProduct} onOpenChange={(v) => { if (!v) setDetailProduct(null); }}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Maelezo ya Bidhaa</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t("products.detailTitle")}</DialogTitle></DialogHeader>
           {detailProduct && (
             <div className="space-y-3 mt-2 text-sm">
               <div className="flex justify-between"><span className="text-muted-foreground">Jina:</span><span className="font-medium">{detailProduct.name}</span></div>
