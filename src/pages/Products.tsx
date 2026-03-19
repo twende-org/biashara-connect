@@ -368,10 +368,10 @@ export default function Products() {
         <Select value={filterStatus} onValueChange={setFilterStatus}>
           <SelectTrigger className="w-[140px]"><SelectValue placeholder="Hali..." /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Hali Zote</SelectItem>
-            <SelectItem value="active">Inapatikana</SelectItem>
-            <SelectItem value="inactive">Haipo</SelectItem>
-            <SelectItem value="discontinued">Imesitishwa</SelectItem>
+            <SelectItem value="all">{t("products.allStatuses")}</SelectItem>
+            <SelectItem value="active">{t("products.statusActive")}</SelectItem>
+            <SelectItem value="inactive">{t("products.statusInactive")}</SelectItem>
+            <SelectItem value="discontinued">{t("products.statusDiscontinued")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
