@@ -218,7 +218,7 @@ export default function Products() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Msambazaji</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">{t("products.supplier")}</label>
                 <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
               </div>
               <div>
