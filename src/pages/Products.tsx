@@ -203,7 +203,7 @@ export default function Products() {
                   <Input type="number" value={form.buyingPrice} onChange={(e) => setForm({ ...form, buyingPrice: +e.target.value })} required />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Bei ya Kuuza (TZS) *</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("products.sellingPrice")} *</label>
                   <Input type="number" value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: +e.target.value })} required />
                 </div>
               </div>
