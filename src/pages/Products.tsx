@@ -408,7 +408,7 @@ export default function Products() {
       {!currentShopId ? (
         <div className="stat-card text-center py-12">
           <Package className="mx-auto h-12 w-12 text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">Ongeza duka kwanza ili kuona bidhaa</p>
+          <p className="text-muted-foreground">{t("products.addShopFirst")}</p>
         </div>
       ) : loading ? (
         <div className="text-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent mx-auto" /></div>
