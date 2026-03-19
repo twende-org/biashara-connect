@@ -293,7 +293,7 @@ export default function Products() {
                       <Input value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} placeholder="mfano: 500g" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Ukubwa / Size</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.size")}</label>
                       <Input value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} placeholder="mfano: XL, 42" />
                     </div>
                     <div>
