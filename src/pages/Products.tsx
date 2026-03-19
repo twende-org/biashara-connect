@@ -179,7 +179,7 @@ export default function Products() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Aina / Category *</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("products.category")} *</label>
                   <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
                     <SelectTrigger><SelectValue placeholder="Chagua aina..." /></SelectTrigger>
                     <SelectContent>
