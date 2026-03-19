@@ -272,7 +272,7 @@ export default function Products() {
                 className="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
               >
                 {showAdvanced ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                {showAdvanced ? "Ficha maelezo zaidi" : "Onyesha maelezo zaidi"}
+                {showAdvanced ? t("products.hideMore") : t("products.showMore")}
               </button>
 
               {showAdvanced && (
