@@ -11,6 +11,7 @@ import { fetchTodaySummary, fetchSummariesForRange, fetchSales } from "@/store/s
 import { formatTZS } from "@/data/mockData";
 import { useUserRole } from "@/hooks/useUserRole";
 import { getActivityLogs, type ActivityLog } from "@/lib/activityLog";
+import { useI18n } from "@/lib/i18n";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
@@ -20,22 +21,16 @@ export default function Dashboard() {
   const todaySummary = useAppSelector((s) => s.sales.todaySummary);
   const rangeSummaries = useAppSelector((s) => s.sales.rangeSummaries);
   const sales = useAppSelector((s) => s.sales.sales);
+  const { t } = useI18n();
 
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [logsLoading, setLogsLoading] = useState(false);
 
-  const today = new Date().toISOString().split("T")[0];
-
   useEffect(() => {
     if (!currentShopId) return;
-    // Single doc read for today's stats
     dispatch(fetchTodaySummary(currentShopId));
-    // Products for stock alerts
     dispatch(fetchProducts(currentShopId));
-    // Today's sales for recent sales list
     dispatch(fetchSales(currentShopId));
-
-    // Weekly summaries for chart (7 days)
     const end = new Date();
     const start = new Date();
     start.setDate(start.getDate() - 6);
@@ -46,7 +41,6 @@ export default function Dashboard() {
     }));
   }, [currentShopId, dispatch]);
 
-  // Fetch activity logs for owner only
   useEffect(() => {
     if (!currentShopId || role !== "owner") return;
     setLogsLoading(true);
@@ -59,9 +53,12 @@ export default function Dashboard() {
   const lowStock = useMemo(() => products.filter((p) => p.stock <= p.minStock), [products]);
   const totalStockValue = useMemo(() => products.reduce((sum, p) => sum + p.sellingPrice * p.stock, 0), [products]);
 
-  // Build weekly chart from summaries (fills in zero-days)
+  const dayKeys = [
+    "day.sunday", "day.monday", "day.tuesday", "day.wednesday",
+    "day.thursday", "day.friday", "day.saturday",
+  ] as const;
+
   const weeklySalesData = useMemo(() => {
-    const days = ["Jumapili", "Jumatatu", "Jumanne", "Jumatano", "Alhamisi", "Ijumaa", "Jumamosi"];
     const now = new Date();
     const weekData: { day: string; amount: number }[] = [];
     for (let i = 6; i >= 0; i--) {
@@ -69,10 +66,10 @@ export default function Dashboard() {
       d.setDate(d.getDate() - i);
       const dateStr = d.toISOString().split("T")[0];
       const summary = rangeSummaries.find((s) => s.date === dateStr);
-      weekData.push({ day: days[d.getDay()], amount: summary?.totalSales || 0 });
+      weekData.push({ day: t(dayKeys[d.getDay()]), amount: summary?.totalSales || 0 });
     }
     return weekData;
-  }, [rangeSummaries]);
+  }, [rangeSummaries, t]);
 
   const todayRevenue = todaySummary?.totalSales || 0;
   const todayProfit = todaySummary?.profit || 0;
@@ -80,15 +77,15 @@ export default function Dashboard() {
 
   const stats = [
     {
-      label: "Mauzo ya Leo",
+      label: t("dashboard.todaySales"),
       value: formatTZS(todayRevenue),
-      change: `${todayTransactions} mauzo`,
+      change: `${todayTransactions} ${t("dashboard.sales")}`,
       icon: ShoppingCart,
       color: "bg-primary/10 text-primary",
       visible: true,
     },
     {
-      label: "Faida ya Leo",
+      label: t("dashboard.todayProfit"),
       value: formatTZS(Math.round(todayProfit)),
       change: todayRevenue > 0 ? `${((todayProfit / todayRevenue) * 100).toFixed(0)}%` : "0%",
       icon: TrendingUp,
@@ -96,7 +93,7 @@ export default function Dashboard() {
       visible: permissions.canViewDashboardProfit,
     },
     {
-      label: "Bidhaa Zote",
+      label: t("dashboard.totalProducts"),
       value: products.length.toString(),
       change: formatTZS(totalStockValue),
       icon: Package,
@@ -104,40 +101,41 @@ export default function Dashboard() {
       visible: permissions.canViewDashboardStock,
     },
     {
-      label: "Stoo ya Chini",
+      label: t("dashboard.lowStock"),
       value: lowStock.length.toString(),
-      change: lowStock.length > 0 ? "Tahadhari!" : "Sawa",
+      change: lowStock.length > 0 ? t("dashboard.warning") : t("dashboard.ok"),
       icon: AlertTriangle,
       color: "bg-destructive/10 text-destructive",
       visible: permissions.canViewDashboardStock,
     },
   ].filter((s) => s.visible);
 
+  const roleLabels: Record<string, string> = {
+    owner: t("role.owner"),
+    manager: t("role.manager"),
+    attendant: t("role.attendant"),
+  };
+
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Dashibodi</h1>
-        <p className="page-description">Muhtasari wa biashara yako ya leo</p>
+        <h1 className="page-title">{t("dashboard.title")}</h1>
+        <p className="page-description">{t("dashboard.subtitle")}</p>
       </div>
 
       {!currentShopId ? (
         <div className="stat-card text-center py-12">
           <DollarSign className="mx-auto h-12 w-12 text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">Ongeza duka kwanza ili kuona takwimu</p>
+          <p className="text-muted-foreground">{t("dashboard.addShopFirst")}</p>
         </div>
       ) : (
         <>
-          {/* Stats Grid */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
             {stats.map((stat) => (
               <div key={stat.label} className="stat-card">
                 <div className="flex items-center justify-between mb-3">
-                  <div className={`rounded-lg p-2 ${stat.color}`}>
-                    <stat.icon className="h-5 w-5" />
-                  </div>
-                  <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
-                    {stat.change}
-                  </span>
+                  <div className={`rounded-lg p-2 ${stat.color}`}><stat.icon className="h-5 w-5" /></div>
+                  <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">{stat.change}</span>
                 </div>
                 <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                 <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
@@ -145,31 +143,28 @@ export default function Dashboard() {
             ))}
           </div>
 
-          {/* Weekly Chart */}
           <div className="grid gap-6 lg:grid-cols-3 mb-6">
             <div className="stat-card lg:col-span-2">
-              <h2 className="text-base font-semibold mb-4">Mauzo ya Wiki (Siku 7 zilizopita)</h2>
+              <h2 className="text-base font-semibold mb-4">{t("dashboard.weeklySales")}</h2>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklySalesData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(30, 15%, 88%)" />
                     <XAxis dataKey="day" tick={{ fontSize: 12 }} />
                     <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 12 }} />
-                    <Tooltip formatter={(value: number) => [formatTZS(value), "Mauzo"]} contentStyle={{ borderRadius: "0.5rem", border: "1px solid hsl(30,15%,88%)" }} />
+                    <Tooltip formatter={(value: number) => [formatTZS(value), t("nav.sales")]} contentStyle={{ borderRadius: "0.5rem", border: "1px solid hsl(30,15%,88%)" }} />
                     <Bar dataKey="amount" fill="hsl(36, 90%, 50%)" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Stock Alerts */}
             <div className="stat-card">
               <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-destructive" />
-                Tahadhari ya Stoo
+                <AlertTriangle className="h-4 w-4 text-destructive" />{t("dashboard.stockAlert")}
               </h2>
               {lowStock.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">Hakuna bidhaa yenye stoo ya chini 🎉</p>
+                <p className="text-sm text-muted-foreground text-center py-4">{t("dashboard.noLowStock")}</p>
               ) : (
                 <div className="space-y-3">
                   {lowStock.map((p) => (
@@ -180,7 +175,7 @@ export default function Dashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-lg font-bold text-destructive">{p.stock}</p>
-                        <p className="text-xs text-muted-foreground">zilizobaki</p>
+                        <p className="text-xs text-muted-foreground">{t("dashboard.remaining")}</p>
                       </div>
                     </div>
                   ))}
@@ -189,11 +184,10 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Recent Sales */}
           <div className="stat-card">
-            <h2 className="text-base font-semibold mb-4">Mauzo ya Hivi Karibuni</h2>
+            <h2 className="text-base font-semibold mb-4">{t("dashboard.recentSales")}</h2>
             {sales.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">Hakuna mauzo bado</p>
+              <p className="text-sm text-muted-foreground text-center py-4">{t("dashboard.noSalesYet")}</p>
             ) : (
               <div className="space-y-3">
                 {sales.slice(0, 8).map((sale) => (
@@ -208,19 +202,18 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-          {/* Activity Logs — Owner Only */}
+
           {role === "owner" && (
             <div className="stat-card mt-6">
               <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary" />
-                Shughuli za Hivi Karibuni
+                <Activity className="h-4 w-4 text-primary" />{t("dashboard.recentActivity")}
               </h2>
               {logsLoading ? (
                 <div className="flex justify-center py-6">
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                 </div>
               ) : activityLogs.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">Hakuna shughuli zilizorekodiwa bado</p>
+                <p className="text-sm text-muted-foreground text-center py-4">{t("dashboard.noActivity")}</p>
               ) : (
                 <div className="space-y-2">
                   {activityLogs.map((log) => (
@@ -239,15 +232,14 @@ export default function Dashboard() {
                         <p className="text-sm text-foreground">{log.details}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                            <User className="h-3 w-3" />
-                            {log.userName}
+                            <User className="h-3 w-3" />{log.userName}
                           </span>
                           <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
                             log.role === "owner" ? "bg-primary/10 text-primary" :
                             log.role === "manager" ? "bg-info/10 text-info" :
                             "bg-muted text-muted-foreground"
                           }`}>
-                            {log.role === "owner" ? "Mmiliki" : log.role === "manager" ? "Meneja" : "Muuzaji"}
+                            {roleLabels[log.role] || log.role}
                           </span>
                           <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
                             <Clock className="h-3 w-3" />
