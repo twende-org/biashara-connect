@@ -40,6 +40,7 @@ export default function Products() {
   const { permissions } = useUserRole();
   const { log: logActivity } = useActivityLogger();
   const { products, loading } = useAppSelector((s) => s.products);
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
