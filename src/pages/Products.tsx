@@ -279,7 +279,7 @@ export default function Products() {
                 <div className="space-y-3 border-t pt-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">SKU</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.sku")}</label>
                       <Input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} placeholder="mfano: PRD-001" />
                     </div>
                     <div>
