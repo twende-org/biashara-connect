@@ -257,8 +257,8 @@ export default function Products() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                       <ImagePlus className="h-5 w-5 text-primary" />
                     </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-foreground">Bonyeza kuchagua picha</p>
+                     <div className="text-left">
+                      <p className="text-sm font-medium text-foreground">{t("products.clickToSelect")}</p>
                       <p className="text-xs text-muted-foreground">PNG, JPG hadi 5MB</p>
                     </div>
                   </button>
