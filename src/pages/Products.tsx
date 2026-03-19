@@ -162,7 +162,7 @@ export default function Products() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{editingProduct ? "Hariri Bidhaa" : "Ongeza Bidhaa Mpya"}</DialogTitle>
+              <DialogTitle>{editingProduct ? t("products.editTitle") : t("products.addTitle")}</DialogTitle>
             </DialogHeader>
             {submitting && <Progress value={progress} className="h-1" />}
             <form onSubmit={handleSubmit} className="space-y-3 mt-4">
