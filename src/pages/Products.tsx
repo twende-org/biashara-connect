@@ -329,7 +329,7 @@ export default function Products() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1 block">Dhamana / Warranty</label>
+                    <label className="text-sm font-medium text-foreground mb-1 block">{t("products.warranty")}</label>
                     <Input value={form.warranty} onChange={(e) => setForm({ ...form, warranty: e.target.value })} placeholder="mfano: Miezi 6" />
                   </div>
                   <div>
