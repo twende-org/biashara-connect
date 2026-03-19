@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { lazy, Suspense } from "react";
+import { I18nProvider } from "@/lib/i18n";
 
 import AuthGuard from "@/components/AuthGuard";
 import AppLayout from "@/components/layout/AppLayout";
@@ -61,6 +62,7 @@ const ProtectedRoutes = () => (
 const App = () => (
   <HelmetProvider>
     <Provider store={store}>
+      <I18nProvider>
       <TooltipProvider>
         <OrganizationSchema />
         <Toaster />
@@ -99,6 +101,7 @@ const App = () => (
           </Suspense>
         </BrowserRouter>
       </TooltipProvider>
+      </I18nProvider>
     </Provider>
   </HelmetProvider>
 );
