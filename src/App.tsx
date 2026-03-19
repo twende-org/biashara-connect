@@ -101,6 +101,7 @@ const App = () => (
           </Suspense>
         </BrowserRouter>
       </TooltipProvider>
+      </I18nProvider>
     </Provider>
   </HelmetProvider>
 );
