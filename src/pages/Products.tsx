@@ -213,7 +213,7 @@ export default function Products() {
                   <Input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} required />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Stoo ya Chini *</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("products.minStock")} *</label>
                   <Input type="number" value={form.minStock} onChange={(e) => setForm({ ...form, minStock: +e.target.value })} required />
                 </div>
               </div>
