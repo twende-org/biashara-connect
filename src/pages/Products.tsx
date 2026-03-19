@@ -124,7 +124,7 @@ export default function Products() {
         setProgress(0);
       }, 300);
     } catch (err: any) {
-      toast.error(err?.message || "Imeshindikana");
+      toast.error(err?.message || t("products.failed"));
     }
     setSubmitting(false);
   };
