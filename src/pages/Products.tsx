@@ -57,8 +57,8 @@ export default function Products() {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) { toast.error("Tafadhali chagua picha tu"); return; }
-    if (file.size > 5 * 1024 * 1024) { toast.error("Picha isizidi 5MB"); return; }
+    if (!file.type.startsWith("image/")) { toast.error(t("products.imageOnly")); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error(t("products.imageMaxSize")); return; }
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
