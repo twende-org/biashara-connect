@@ -152,8 +152,8 @@ export default function Products() {
     <div>
       <div className="page-header flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="page-title">Bidhaa</h1>
-          <p className="page-description">Simamia bidhaa zako zote — aina yoyote ya biashara</p>
+          <h1 className="page-title">{t("products.title")}</h1>
+          <p className="page-description">{t("products.subtitle")}</p>
         </div>
         {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
