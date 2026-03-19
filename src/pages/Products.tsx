@@ -209,7 +209,7 @@ export default function Products() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Stoo *</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("products.stock")} *</label>
                   <Input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} required />
                 </div>
                 <div>
