@@ -173,7 +173,7 @@ export default function Products() {
                   <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Brand / Chapa</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("products.brand")}</label>
                   <Input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} placeholder="mfano: Samsung, Nike" />
                 </div>
               </div>
