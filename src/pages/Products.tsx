@@ -222,7 +222,7 @@ export default function Products() {
                 <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Picha ya Bidhaa</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">{t("products.image")}</label>
                 <input
                   ref={fileInputRef}
                   type="file"
