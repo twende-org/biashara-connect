@@ -307,13 +307,13 @@ export default function Products() {
                       <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Hali</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.status")}</label>
                       <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="active">Inapatikana</SelectItem>
-                          <SelectItem value="inactive">Haipo</SelectItem>
-                          <SelectItem value="discontinued">Imesitishwa</SelectItem>
+                          <SelectItem value="active">{t("products.statusActive")}</SelectItem>
+                          <SelectItem value="inactive">{t("products.statusInactive")}</SelectItem>
+                          <SelectItem value="discontinued">{t("products.statusDiscontinued")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
