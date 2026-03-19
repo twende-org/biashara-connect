@@ -337,7 +337,7 @@ export default function Products() {
                     <Input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="mfano: mpya, maarufu, offer" />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1 block">Maelezo</label>
+                    <label className="text-sm font-medium text-foreground mb-1 block">{t("products.description")}</label>
                     <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
                   </div>
                 </div>
