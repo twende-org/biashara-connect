@@ -324,7 +324,7 @@ export default function Products() {
                       <Input type="number" value={form.discount} onChange={(e) => setForm({ ...form, discount: +e.target.value })} />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Kodi % (Tax)</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.tax")}</label>
                       <Input type="number" value={form.taxRate} onChange={(e) => setForm({ ...form, taxRate: +e.target.value })} />
                     </div>
                   </div>
