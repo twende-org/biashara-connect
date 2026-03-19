@@ -320,7 +320,7 @@ export default function Products() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Punguzo % (Discount)</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.discount")}</label>
                       <Input type="number" value={form.discount} onChange={(e) => setForm({ ...form, discount: +e.target.value })} />
                     </div>
                     <div>
