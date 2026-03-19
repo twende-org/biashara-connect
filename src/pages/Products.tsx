@@ -188,7 +188,7 @@ export default function Products() {
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Kipimo / Unit</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("products.unit")}</label>
                   <Select value={form.unit} onValueChange={(v) => setForm({ ...form, unit: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
