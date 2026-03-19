@@ -382,23 +382,23 @@ export default function Products() {
           <DialogHeader><DialogTitle>{t("products.detailTitle")}</DialogTitle></DialogHeader>
           {detailProduct && (
             <div className="space-y-3 mt-2 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Jina:</span><span className="font-medium">{detailProduct.name}</span></div>
-              {detailProduct.brand && <div className="flex justify-between"><span className="text-muted-foreground">Brand:</span><span>{detailProduct.brand}</span></div>}
-              <div className="flex justify-between"><span className="text-muted-foreground">Aina:</span><span>{detailProduct.category}</span></div>
-              {detailProduct.sku && <div className="flex justify-between"><span className="text-muted-foreground">SKU:</span><span>{detailProduct.sku}</span></div>}
-              {detailProduct.barcode && <div className="flex justify-between"><span className="text-muted-foreground">Barcode:</span><span>{detailProduct.barcode}</span></div>}
-              <div className="flex justify-between"><span className="text-muted-foreground">Bei Kununua:</span><span>{formatTZS(detailProduct.buyingPrice)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Bei Kuuza:</span><span>{formatTZS(detailProduct.sellingPrice)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Faida:</span><span className="text-accent font-medium">{formatTZS(profit(detailProduct))} ({profitMargin(detailProduct)}%)</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Stoo:</span><span className={cn(detailProduct.stock <= detailProduct.minStock ? "text-destructive" : "text-accent", "font-medium")}>{detailProduct.stock} {detailProduct.unit || "pcs"}</span></div>
-              {detailProduct.weight && <div className="flex justify-between"><span className="text-muted-foreground">Uzito:</span><span>{detailProduct.weight}</span></div>}
-              {detailProduct.size && <div className="flex justify-between"><span className="text-muted-foreground">Ukubwa:</span><span>{detailProduct.size}</span></div>}
-              {detailProduct.color && <div className="flex justify-between"><span className="text-muted-foreground">Rangi:</span><span>{detailProduct.color}</span></div>}
-              {detailProduct.expiryDate && <div className="flex justify-between"><span className="text-muted-foreground">Tarehe Kuisha:</span><span>{detailProduct.expiryDate}</span></div>}
-              {detailProduct.warranty && <div className="flex justify-between"><span className="text-muted-foreground">Dhamana:</span><span>{detailProduct.warranty}</span></div>}
-              {detailProduct.discount ? <div className="flex justify-between"><span className="text-muted-foreground">Punguzo:</span><span>{detailProduct.discount}%</span></div> : null}
-              {detailProduct.supplier && <div className="flex justify-between"><span className="text-muted-foreground">Msambazaji:</span><span>{detailProduct.supplier}</span></div>}
-              {detailProduct.description && <div className="border-t pt-2"><span className="text-muted-foreground block mb-1">Maelezo:</span><p>{detailProduct.description}</p></div>}
+              <div className="flex justify-between"><span className="text-muted-foreground">{t("products.name")}:</span><span className="font-medium">{detailProduct.name}</span></div>
+              {detailProduct.brand && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.brand")}:</span><span>{detailProduct.brand}</span></div>}
+              <div className="flex justify-between"><span className="text-muted-foreground">{t("products.category")}:</span><span>{detailProduct.category}</span></div>
+              {detailProduct.sku && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.sku")}:</span><span>{detailProduct.sku}</span></div>}
+              {detailProduct.barcode && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.barcode")}:</span><span>{detailProduct.barcode}</span></div>}
+              <div className="flex justify-between"><span className="text-muted-foreground">{t("products.buyingPriceShort")}:</span><span>{formatTZS(detailProduct.buyingPrice)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">{t("products.sellingPriceShort")}:</span><span>{formatTZS(detailProduct.sellingPrice)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">{t("products.profit")}:</span><span className="text-accent font-medium">{formatTZS(profit(detailProduct))} ({profitMargin(detailProduct)}%)</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">{t("products.stock")}:</span><span className={cn(detailProduct.stock <= detailProduct.minStock ? "text-destructive" : "text-accent", "font-medium")}>{detailProduct.stock} {detailProduct.unit || "pcs"}</span></div>
+              {detailProduct.weight && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.weight")}:</span><span>{detailProduct.weight}</span></div>}
+              {detailProduct.size && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.size")}:</span><span>{detailProduct.size}</span></div>}
+              {detailProduct.color && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.color")}:</span><span>{detailProduct.color}</span></div>}
+              {detailProduct.expiryDate && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.expiryDate")}:</span><span>{detailProduct.expiryDate}</span></div>}
+              {detailProduct.warranty && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.warranty")}:</span><span>{detailProduct.warranty}</span></div>}
+              {detailProduct.discount ? <div className="flex justify-between"><span className="text-muted-foreground">{t("products.discount")}:</span><span>{detailProduct.discount}%</span></div> : null}
+              {detailProduct.supplier && <div className="flex justify-between"><span className="text-muted-foreground">{t("products.supplier")}:</span><span>{detailProduct.supplier}</span></div>}
+              {detailProduct.description && <div className="border-t pt-2"><span className="text-muted-foreground block mb-1">{t("products.description")}:</span><p>{detailProduct.description}</p></div>}
               {detailProduct.tags && <div className="flex flex-wrap gap-1">{detailProduct.tags.split(",").map((t, i) => <span key={i} className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs">{t.trim()}</span>)}</div>}
             </div>
           )}
