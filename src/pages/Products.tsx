@@ -92,7 +92,7 @@ export default function Products() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentShopId) { toast.error("Chagua duka kwanza"); return; }
+    if (!currentShopId) { toast.error(t("products.selectShop")); return; }
     setSubmitting(true);
     setProgress(30);
     try {
