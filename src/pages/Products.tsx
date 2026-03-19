@@ -244,12 +244,8 @@ export default function Products() {
                     >
                       <X className="h-3 w-3" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="mt-1 text-xs text-primary hover:underline block"
-                    >
-                      Badilisha picha
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="mt-1 text-xs text-primary hover:underline block">
+                      {t("products.changeImage")}
                     </button>
                   </div>
                 ) : (
