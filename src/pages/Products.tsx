@@ -297,7 +297,7 @@ export default function Products() {
                       <Input value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} placeholder="mfano: XL, 42" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Rangi</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.color")}</label>
                       <Input value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })} placeholder="mfano: Nyeusi" />
                     </div>
                   </div>
