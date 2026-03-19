@@ -417,13 +417,13 @@ export default function Products() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-left text-muted-foreground">
-                <th className="pb-3 font-medium">Bidhaa</th>
-                <th className="pb-3 font-medium hidden sm:table-cell">Aina</th>
-                <th className="pb-3 font-medium hidden md:table-cell">Brand</th>
-                <th className="pb-3 font-medium text-right">Bei Kuuza</th>
-                <th className="pb-3 font-medium text-right">Faida</th>
-                <th className="pb-3 font-medium text-right">Stoo</th>
-                <th className="pb-3 font-medium text-right">Vitendo</th>
+                <th className="pb-3 font-medium">{t("sales.product")}</th>
+                <th className="pb-3 font-medium hidden sm:table-cell">{t("products.category")}</th>
+                <th className="pb-3 font-medium hidden md:table-cell">{t("products.brand")}</th>
+                <th className="pb-3 font-medium text-right">{t("products.sellingPriceShort")}</th>
+                <th className="pb-3 font-medium text-right">{t("products.profit")}</th>
+                <th className="pb-3 font-medium text-right">{t("products.stock")}</th>
+                <th className="pb-3 font-medium text-right">{t("products.actions")}</th>
               </tr>
             </thead>
             <tbody>
