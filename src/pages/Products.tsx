@@ -333,7 +333,7 @@ export default function Products() {
                     <Input value={form.warranty} onChange={(e) => setForm({ ...form, warranty: e.target.value })} placeholder="mfano: Miezi 6" />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1 block">Tags (tenganisha kwa koma)</label>
+                    <label className="text-sm font-medium text-foreground mb-1 block">{t("products.tags")}</label>
                     <Input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="mfano: mpya, maarufu, offer" />
                   </div>
                   <div>
