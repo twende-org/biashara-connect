@@ -5,17 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchSuppliers, createSupplier, editSupplier, removeSupplier } from "@/store/suppliersSlice";
 import { toast } from "sonner";
 import type { Supplier } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useI18n } from "@/lib/i18n";
 
 const defaultForm = { name: "", phone: "", email: "", address: "", products: "", notes: "" };
 
@@ -24,6 +21,7 @@ export default function Suppliers() {
   const user = useAppSelector((s) => s.auth.user);
   const { permissions } = useUserRole();
   const { suppliers, loading } = useAppSelector((s) => s.suppliers);
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSup, setEditingSup] = useState<Supplier | null>(null);
@@ -51,43 +49,31 @@ export default function Suppliers() {
       setProgress(60);
       if (editingSup) {
         await dispatch(editSupplier({ id: editingSup.id, data: form })).unwrap();
-        toast.success("Msambazaji amesasishwa!");
+        toast.success(t("suppliers.updated"));
       } else {
         await dispatch(createSupplier({ ...form, ownerId: user!.id })).unwrap();
-        toast.success("Msambazaji ameongezwa!");
+        toast.success(t("suppliers.added"));
       }
       setProgress(100);
-      setTimeout(() => {
-        setDialogOpen(false);
-        setEditingSup(null);
-        resetForm();
-        setProgress(0);
-      }, 300);
+      setTimeout(() => { setDialogOpen(false); setEditingSup(null); resetForm(); setProgress(0); }, 300);
     } catch (err: any) {
-      toast.error(err?.message || "Imeshindikana");
+      toast.error(err?.message || t("products.failed"));
     }
     setSubmitting(false);
   };
 
   const handleEdit = (s: Supplier) => {
     setEditingSup(s);
-    setForm({
-      name: s.name,
-      phone: s.phone,
-      email: s.email || "",
-      address: s.address || "",
-      products: s.products,
-      notes: s.notes,
-    });
+    setForm({ name: s.name, phone: s.phone, email: s.email || "", address: s.address || "", products: s.products, notes: s.notes });
     setDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
     try {
       await dispatch(removeSupplier(id)).unwrap();
-      toast.success("Msambazaji amefutwa!");
+      toast.success(t("suppliers.deleted"));
     } catch (err: any) {
-      toast.error(err?.message || "Imeshindikana kufuta");
+      toast.error(err?.message || t("products.failed"));
     }
   };
 
@@ -95,48 +81,48 @@ export default function Suppliers() {
     <div>
       <div className="page-header flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="page-title">Wasambazaji</h1>
-          <p className="page-description">Simamia wasambazaji wako</p>
+          <h1 className="page-title">{t("suppliers.title")}</h1>
+          <p className="page-description">{t("suppliers.subtitle")}</p>
         </div>
         {permissions.canAddSupplier && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingSup(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" />Ongeza Msambazaji</Button>
+            <Button><Plus className="h-4 w-4 mr-2" />{t("suppliers.add")}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingSup ? "Hariri Msambazaji" : "Ongeza Msambazaji Mpya"}</DialogTitle>
+              <DialogTitle>{editingSup ? t("suppliers.editTitle") : t("suppliers.addTitle")}</DialogTitle>
             </DialogHeader>
             {submitting && <Progress value={progress} className="h-1" />}
             <form onSubmit={handleSubmit} className="space-y-3 mt-4">
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Jina *</label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="Jina la msambazaji" />
+                <label className="text-sm font-medium text-foreground mb-1 block">{t("suppliers.name")} *</label>
+                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Simu *</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("suppliers.phone")} *</label>
                   <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required placeholder="+255 7XX XXX XXX" />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Barua Pepe</label>
+                  <label className="text-sm font-medium text-foreground mb-1 block">{t("suppliers.email")}</label>
                   <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="email@mfano.com" />
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Anwani</label>
-                <Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Mahali alipo msambazaji" />
+                <label className="text-sm font-medium text-foreground mb-1 block">{t("suppliers.address")}</label>
+                <Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Bidhaa</label>
-                <Input value={form.products} onChange={(e) => setForm({ ...form, products: e.target.value })} placeholder="Bidhaa anazosambaza" />
+                <label className="text-sm font-medium text-foreground mb-1 block">{t("suppliers.products")}</label>
+                <Input value={form.products} onChange={(e) => setForm({ ...form, products: e.target.value })} />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Maelezo</label>
-                <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Maelezo mengine..." />
+                <label className="text-sm font-medium text-foreground mb-1 block">{t("suppliers.notes")}</label>
+                <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
               </div>
               <Button type="submit" className="w-full" disabled={submitting}>
-                {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Inaendelea...</> : (editingSup ? "Sasisha" : "Ongeza")}
+                {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("common.loading")}</> : (editingSup ? t("suppliers.update") : t("common.add"))}
               </Button>
             </form>
           </DialogContent>
@@ -146,7 +132,7 @@ export default function Suppliers() {
 
       <div className="relative mb-6 max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Tafuta msambazaji..." className="pl-10" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Input placeholder={t("suppliers.searchPlaceholder")} className="pl-10" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       {loading ? (
@@ -154,7 +140,7 @@ export default function Suppliers() {
       ) : filtered.length === 0 ? (
         <div className="stat-card text-center py-12">
           <Truck className="mx-auto h-12 w-12 text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">Hakuna wasambazaji bado</p>
+          <p className="text-muted-foreground">{t("suppliers.noSuppliers")}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
