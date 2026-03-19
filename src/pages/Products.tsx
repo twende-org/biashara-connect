@@ -283,7 +283,7 @@ export default function Products() {
                       <Input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} placeholder="mfano: PRD-001" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Barcode</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.barcode")}</label>
                       <Input value={form.barcode} onChange={(e) => setForm({ ...form, barcode: e.target.value })} placeholder="mfano: 8901234567890" />
                     </div>
                   </div>
