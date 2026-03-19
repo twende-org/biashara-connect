@@ -303,7 +303,7 @@ export default function Products() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Tarehe ya Kuisha</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.expiryDate")}</label>
                       <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} />
                     </div>
                     <div>
