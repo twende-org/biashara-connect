@@ -344,7 +344,7 @@ export default function Products() {
               )}
 
               <Button type="submit" className="w-full" disabled={submitting}>
-                {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Inaendelea...</> : (editingProduct ? "Sasisha" : "Ongeza")}
+                {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("common.loading")}</> : (editingProduct ? t("products.update") : t("common.add"))}
               </Button>
             </form>
           </DialogContent>
