@@ -289,7 +289,7 @@ export default function Products() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-1 block">Uzito</label>
+                      <label className="text-sm font-medium text-foreground mb-1 block">{t("products.weight")}</label>
                       <Input value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} placeholder="mfano: 500g" />
                     </div>
                     <div>
