@@ -62,6 +62,7 @@ const ProtectedRoutes = () => (
 const App = () => (
   <HelmetProvider>
     <Provider store={store}>
+      <I18nProvider>
       <TooltipProvider>
         <OrganizationSchema />
         <Toaster />
