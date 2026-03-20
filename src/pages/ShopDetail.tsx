@@ -346,7 +346,8 @@ export default function ShopDetail() {
                   {product.imageUrl ? (
                     <img
                       src={product.imageUrl}
-                      alt={product.name}
+                      alt={`${product.name} - ${product.category} - TZS ${product.sellingPrice.toLocaleString()} kwenye ${shop.name}`}
+                      loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                   ) : (

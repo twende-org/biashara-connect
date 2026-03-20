@@ -428,7 +428,8 @@ export default function ShopDirectory() {
                             >
                               <img
                                 src={p.imageUrl!}
-                                alt={p.name}
+                                alt={`${p.name} - bidhaa ya ${shop.name}`}
+                                loading="lazy"
                                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                               />
                             </div>
