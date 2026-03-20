@@ -116,13 +116,61 @@ export default function ShopDirectory() {
     setSortBy("name");
   };
 
+  // JSON-LD: ItemList of shops for search engines
+  const shopListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Maduka yote kwenye DukaSmart",
+    description: "Orodha ya maduka yaliyosajiliwa kwenye DukaSmart Tanzania",
+    numberOfItems: filteredShops.length,
+    itemListElement: filteredShops.slice(0, 30).map((shop, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "LocalBusiness",
+        name: shop.name,
+        description: shop.description || `Duka la ${shop.name} kwenye DukaSmart`,
+        url: `https://duka.twendedigital.tech/maduka/${shop.id}`,
+        ...(shop.location && {
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: shop.location,
+            addressCountry: "TZ",
+          },
+        }),
+        ...(shop.phone && { telephone: shop.phone }),
+        ...(shop.lat && shop.lon && {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: shop.lat,
+            longitude: shop.lon,
+          },
+        }),
+      },
+    })),
+  };
+
+  const collectionPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Maduka Yote - DukaSmart Shop Directory",
+    description: "Gundua maduka na bidhaa bora karibu nawe kwenye DukaSmart Tanzania.",
+    url: "https://duka.twendedigital.tech/maduka",
+    isPartOf: { "@type": "WebSite", name: "DukaSmart", url: "https://duka.twendedigital.tech" },
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="Maduka Yote — Tafuta Duka na Bidhaa | DukaSmart"
-        description="Gundua maduka na bidhaa bora karibu nawe. Tafuta, linganisha bei, na upate unachohitaji kwenye DukaSmart."
-        keywords="maduka, bidhaa, duka, tafuta duka, shop directory, products tanzania, bei, dukasmart"
+        description="Gundua maduka na bidhaa bora karibu nawe Tanzania. Tafuta, linganisha bei, na upate unachohitaji kwenye DukaSmart directory."
+        keywords="maduka, bidhaa, duka, tafuta duka, shop directory, products tanzania, bei, dukasmart, duka karibu, shops near me tanzania"
         canonical="/maduka"
+        jsonLd={[shopListJsonLd, collectionPageJsonLd]}
+        breadcrumbs={[
+          { name: "Nyumbani", url: "/" },
+          { name: "Maduka", url: "/maduka" },
+        ]}
       />
 
       {/* Navbar */}
