@@ -68,6 +68,7 @@ const App = () => (
         <OrganizationSchema />
         <Toaster />
         <Sonner />
+        <PWAInstallPrompt />
         <BrowserRouter>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
