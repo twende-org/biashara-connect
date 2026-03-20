@@ -377,6 +377,11 @@ const translations = {
   // ─── NotFound ───
   "notFound.title": { sw: "Ukurasa haujapatikana", en: "Page not found" },
   "notFound.back": { sw: "Rudi Nyumbani", en: "Return to Home" },
+  // ─── PWA ───
+  "pwa.offline": { sw: "Huna mtandao — unatumia hali ya nje ya mtandao", en: "You're offline — using offline mode" },
+  "pwa.installTitle": { sw: "Sakinisha DukaSmart", en: "Install DukaSmart" },
+  "pwa.installDesc": { sw: "Ongeza kwenye skrini yako kuu ili upate ufikiaji wa haraka na utumie bila mtandao", en: "Add to your home screen for quick access and offline use" },
+  "pwa.installBtn": { sw: "Sakinisha Sasa", en: "Install Now" },
 } as const;
 
 type TranslationKey = keyof typeof translations;

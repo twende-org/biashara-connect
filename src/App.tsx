@@ -12,6 +12,7 @@ import AuthGuard from "@/components/AuthGuard";
 import AppLayout from "@/components/layout/AppLayout";
 import RoleGuard from "@/components/RoleGuard";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 // Public pages
 import Landing from "@/pages/Landing";
@@ -67,6 +68,7 @@ const App = () => (
         <OrganizationSchema />
         <Toaster />
         <Sonner />
+        <PWAInstallPrompt />
         <BrowserRouter>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
