@@ -356,6 +356,7 @@ export default function Products() {
         </Dialog>
         )}
         </div>
+      </div>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
