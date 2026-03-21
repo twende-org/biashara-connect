@@ -382,6 +382,17 @@ const translations = {
   "pwa.installTitle": { sw: "Sakinisha DukaSmart", en: "Install DukaSmart" },
   "pwa.installDesc": { sw: "Ongeza kwenye skrini yako kuu ili upate ufikiaji wa haraka na utumie bila mtandao", en: "Add to your home screen for quick access and offline use" },
   "pwa.installBtn": { sw: "Sakinisha Sasa", en: "Install Now" },
+
+  // ─── WhatsApp ───
+  "whatsapp.shareReceipt": { sw: "Tuma Risiti WhatsApp", en: "Share Receipt via WhatsApp" },
+  "whatsapp.sendToCustomer": { sw: "Tuma kwa Mteja", en: "Send to Customer" },
+  "whatsapp.shareGeneral": { sw: "Shiriki WhatsApp", en: "Share via WhatsApp" },
+  "whatsapp.lowStockAlert": { sw: "Tuma Tahadhari WhatsApp", en: "Send Low Stock Alert" },
+  "whatsapp.lowStockTitle": { sw: "Bidhaa Zimepungua", en: "Low Stock Products" },
+  "whatsapp.noLowStock": { sw: "Hakuna bidhaa zilizopungua", en: "No low stock products" },
+  "whatsapp.notifyCustomer": { sw: "Arifu Mteja WhatsApp", en: "Notify Customer via WhatsApp" },
+  "whatsapp.enterPhone": { sw: "Weka nambari ya simu", en: "Enter phone number" },
+  "whatsapp.send": { sw: "Tuma", en: "Send" },
 } as const;
 
 type TranslationKey = keyof typeof translations;

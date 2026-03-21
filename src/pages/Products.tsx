@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Plus, Search, Edit, Trash2, Package, Eye, ChevronDown, ChevronUp, Loader2, ImagePlus, X } from "lucide-react";
+import WhatsAppLowStockAlert from "@/components/products/WhatsAppLowStockAlert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,6 +38,8 @@ const categories = [
 export default function Products() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const shops = useAppSelector((s) => s.shops.shops);
+  const currentShop = shops.find(s => s.id === currentShopId);
   const { permissions } = useUserRole();
   const { log: logActivity } = useActivityLogger();
   const { products, loading } = useAppSelector((s) => s.products);
@@ -155,7 +158,9 @@ export default function Products() {
           <h1 className="page-title">{t("products.title")}</h1>
           <p className="page-description">{t("products.subtitle")}</p>
         </div>
-        {permissions.canAddProduct && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <WhatsAppLowStockAlert products={products} shopName={currentShop?.name || "Duka"} />
+          {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />{t("products.add")}</Button>
@@ -350,6 +355,7 @@ export default function Products() {
           </DialogContent>
         </Dialog>
         )}
+        </div>
       </div>
 
       {/* Filters */}

@@ -1,8 +1,11 @@
-import { useRef } from "react";
-import { X, Printer } from "lucide-react";
+import { useRef, useState } from "react";
+import { X, Printer, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatTZS } from "@/data/mockData";
+import { openWhatsApp, shareWhatsApp, buildReceiptMessage, buildOrderNotification } from "@/lib/whatsapp";
+import { useI18n } from "@/lib/i18n";
 import type { Sale } from "@/types";
 
 interface Props {
@@ -42,6 +45,9 @@ const RECEIPT_STYLES = `
 
 export default function SaleReceipt({ sale, shopName, open, onClose }: Props) {
   const receiptRef = useRef<HTMLDivElement>(null);
+  const { t } = useI18n();
+  const [waPhone, setWaPhone] = useState("");
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
 
   if (!sale) return null;
 
@@ -59,6 +65,29 @@ export default function SaleReceipt({ sale, shopName, open, onClose }: Props) {
     win.document.write(`<!DOCTYPE html><html><head><title>Risiti</title><style>${RECEIPT_STYLES}</style></head><body>${content.innerHTML}</body></html>`);
     win.document.close();
     win.print();
+  };
+
+  const handleShareWhatsApp = () => {
+    const msg = buildReceiptMessage(sale, shopName);
+    if (sale.customerPhone) {
+      openWhatsApp(sale.customerPhone, msg);
+    } else {
+      shareWhatsApp(msg);
+    }
+  };
+
+  const handleSendToPhone = () => {
+    if (!waPhone.trim()) return;
+    const msg = buildReceiptMessage(sale, shopName);
+    openWhatsApp(waPhone, msg);
+    setWaPhone("");
+    setShowPhoneInput(false);
+  };
+
+  const handleNotifyCustomer = () => {
+    if (!sale.customerPhone) return;
+    const msg = buildOrderNotification(sale, shopName);
+    openWhatsApp(sale.customerPhone, msg);
   };
 
   return (
@@ -79,18 +108,13 @@ export default function SaleReceipt({ sale, shopName, open, onClose }: Props) {
           className="mx-auto bg-white text-black rounded border shadow-inner overflow-hidden"
           style={{ width: "58mm", minHeight: "109mm", padding: "3mm 2mm", fontFamily: "'Courier New', monospace", fontSize: "10px", lineHeight: 1.3 }}
         >
-          {/* Header */}
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: "13px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.5px" }}>
               {shopName}
             </div>
             <div style={{ fontSize: "9px", color: "#444", marginTop: "1px" }}>RISITI YA MAUZO</div>
           </div>
-
-          {/* Divider */}
           <hr style={{ border: "none", borderTop: "2px solid #000", margin: "4px 0" }} />
-
-          {/* Sale info */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "9px" }}>
               <span style={{ color: "#555" }}>Tarehe:</span>
@@ -107,17 +131,11 @@ export default function SaleReceipt({ sale, shopName, open, onClose }: Props) {
               </div>
             )}
           </div>
-
-          {/* Items divider */}
           <hr style={{ border: "none", borderTop: "1px dashed #000", margin: "4px 0" }} />
-
-          {/* Items header */}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "9px", fontWeight: 700, borderBottom: "1px solid #000", paddingBottom: "2px", marginBottom: "2px" }}>
             <span>Bidhaa</span>
             <span>Jumla</span>
           </div>
-
-          {/* Item */}
           <div style={{ padding: "2px 0" }}>
             <div style={{ fontSize: "9.5px", fontWeight: 600 }}>{sale.productName}</div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "9px", color: "#333" }}>
@@ -125,23 +143,15 @@ export default function SaleReceipt({ sale, shopName, open, onClose }: Props) {
               <span style={{ fontWeight: 600 }}>{formatTZS(sale.totalPrice)}</span>
             </div>
           </div>
-
-          {/* Total divider */}
           <hr style={{ border: "none", borderTop: "2px solid #000", margin: "4px 0" }} />
-
-          {/* Total */}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", fontWeight: 900, padding: "2px 0" }}>
             <span>JUMLA</span>
             <span>{formatTZS(sale.totalPrice)}</span>
           </div>
-
-          {/* Payment */}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "9px", marginTop: "2px" }}>
             <span style={{ color: "#555" }}>Malipo:</span>
             <span>{sale.paymentMethod}</span>
           </div>
-
-          {/* Footer */}
           <hr style={{ border: "none", borderTop: "1px dashed #000", margin: "5px 0 3px" }} />
           <div style={{ textAlign: "center", fontSize: "10px", fontWeight: 700 }}>Asante kwa kununua!</div>
           <div style={{ textAlign: "center", fontSize: "8px", color: "#777", marginTop: "2px" }}>
@@ -149,9 +159,48 @@ export default function SaleReceipt({ sale, shopName, open, onClose }: Props) {
           </div>
         </div>
 
-        <Button onClick={handlePrint} className="w-full mt-2" size="sm">
-          <Printer className="h-4 w-4 mr-2" />Chapisha Risiti
-        </Button>
+        {/* Action buttons */}
+        <div className="flex flex-col gap-2 mt-2">
+          <Button onClick={handlePrint} className="w-full" size="sm">
+            <Printer className="h-4 w-4 mr-2" />Chapisha Risiti
+          </Button>
+
+          <Button onClick={handleShareWhatsApp} variant="secondary" size="sm" className="w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 border border-[#25D366]/30">
+            <MessageCircle className="h-4 w-4 mr-2" />
+            {sale.customerPhone ? t("whatsapp.sendToCustomer") : t("whatsapp.shareReceipt")}
+          </Button>
+
+          {sale.customerPhone && (
+            <Button onClick={handleNotifyCustomer} variant="outline" size="sm" className="w-full">
+              <Send className="h-4 w-4 mr-2" />{t("whatsapp.notifyCustomer")}
+            </Button>
+          )}
+
+          {!sale.customerPhone && (
+            <>
+              {showPhoneInput ? (
+                <div className="flex gap-2">
+                  <Input
+                    value={waPhone}
+                    onChange={(e) => setWaPhone(e.target.value)}
+                    placeholder={t("whatsapp.enterPhone")}
+                    className="text-xs h-8"
+                  />
+                  <Button onClick={handleSendToPhone} size="sm" className="h-8 px-3 bg-[#25D366] hover:bg-[#25D366]/90 text-white">
+                    <Send className="h-3 w-3" />
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowPhoneInput(true)}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors underline"
+                >
+                  {t("whatsapp.enterPhone")}
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
