@@ -200,7 +200,7 @@ export default function Landing() {
             <h2 className="text-3xl font-bold text-foreground sm:text-4xl">{t("landing.pricingTitle")}</h2>
             <p className="mt-4 text-lg text-muted-foreground">{t("landing.pricingDesc")}</p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             {plans.map((p) => (
               <div key={p.name} className={`stat-card flex flex-col ${p.highlight ? "ring-2 ring-primary relative" : ""}`}>
                 {p.highlight && (

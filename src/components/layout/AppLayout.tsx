@@ -126,6 +126,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
           })}
         </nav>
 
+        {isAdmin && (
+          <div className="px-3 mb-2">
+            <Link to="/admin" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors">
+              <Shield className="h-5 w-5" />Admin Panel
+            </Link>
+          </div>
+        )}
+
         <div className="border-t border-sidebar-border p-3">
           {role && (
             <div className="flex items-center gap-2 px-3 py-1.5 mb-1">
