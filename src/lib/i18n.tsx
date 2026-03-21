@@ -162,7 +162,7 @@ const translations = {
 
   // ─── Landing FAQs ───
   "faq.1.q": { sw: "Je, DukaSmart ni bure?", en: "Is DukaSmart free?" },
-  "faq.1.a": { sw: "Hapana, lakini tuna mpango wa Ndogo unaofaa maduka madogo madogo. Mpango huu unakuruhusu kusimamia duka 1 na bidhaa hadi 50 kwa Tsh 9,900/mwezi. Unaweza kuboresha mpango wakati wowote.", en: "No, but we have a Small plan suitable for small shops. This plan lets you manage 1 shop and up to 50 products for Tsh 9,900/month. You can upgrade anytime." },
+  "faq.1.a": { sw: "Ndiyo! Tuna mpango wa Bure milele — duka 1 na bidhaa 20. Unahitaji zaidi? Boresha hadi mpango wa Ndogo (Tsh 9,900/mwezi) au Biashara.", en: "Yes! We have a forever-free plan — 1 shop and 20 products. Need more? Upgrade to the Small plan (Tsh 9,900/month) or Business." },
   "faq.2.q": { sw: "Je, wateja wanaweza kuona duka langu?", en: "Can customers see my shop?" },
   "faq.2.a": { sw: "Ndiyo! Ukishasajili duka lako na kuongeza bidhaa, duka lako litaonekana kwenye sehemu ya Maduka ambapo wateja wanaweza kutafuta na kupata bidhaa zako.", en: "Yes! Once you register your shop and add products, your shop will appear in the Shops section where customers can search and find your products." },
   "faq.3.q": { sw: "Je, data yangu ni salama?", en: "Is my data safe?" },
