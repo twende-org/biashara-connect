@@ -20,6 +20,7 @@ import type { Product } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { useI18n } from "@/lib/i18n";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,
@@ -44,6 +45,7 @@ export default function Products() {
   const { log: logActivity } = useActivityLogger();
   const { products, loading } = useAppSelector((s) => s.products);
   const { t } = useI18n();
+  const { canAddProduct, plan, limits, productCount } = useSubscription();
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -163,7 +165,7 @@ export default function Products() {
           {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" />{t("products.add")}</Button>
+            <Button disabled={!canAddProduct && !editingProduct}><Plus className="h-4 w-4 mr-2" />{t("products.add")}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>

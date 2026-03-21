@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2, Store, Loader2, MapPin, Phone } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Store, Loader2, MapPin, Phone, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +13,7 @@ import { assignUserRole } from "@/lib/firestore";
 import { toast } from "sonner";
 import ShopMap from "@/components/ShopMap";
 import { useI18n } from "@/lib/i18n";
+import { useSubscription } from "@/hooks/useSubscription";
 
 async function geocode(query: string): Promise<{ lat: number; lon: number } | null> {
   try {
@@ -31,6 +32,7 @@ export default function Shops() {
   const user = useAppSelector((s) => s.auth.user);
   const { shops, loading } = useAppSelector((s) => s.shops);
   const { t } = useI18n();
+  const { canAddShop, plan, limits, shopCount } = useSubscription();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<any>(null);
@@ -84,7 +86,7 @@ export default function Shops() {
         </div>
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingShop(null); setForm({ name: "", location: "", phone: "", description: "" }); setProgress(0); } }}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" />{t("shops.add")}</Button>
+            <Button disabled={!canAddShop}><Plus className="h-4 w-4 mr-2" />{t("shops.add")}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editingShop ? t("shops.editTitle") : t("shops.addTitle")}</DialogTitle></DialogHeader>
@@ -117,6 +119,16 @@ export default function Shops() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {!canAddShop && (
+        <div className="flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/5 p-4 mb-6">
+          <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-foreground">{t("subscription.shopLimit")}</p>
+            <p className="text-xs text-muted-foreground">{t("subscription.currentPlan")}: <span className="font-semibold capitalize">{plan}</span> ({shopCount}/{limits.maxShops}). {t("subscription.upgradeDesc")}</p>
+          </div>
+        </div>
+      )}
 
       <div className="relative mb-6 max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

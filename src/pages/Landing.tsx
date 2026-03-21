@@ -41,6 +41,11 @@ export default function Landing() {
 
   const plans = [
     {
+      name: t("plan.free"), price: "0", period: "", desc: t("plan.freeDesc"),
+      features: [t("plan.freeShop"), t("plan.freeProducts"), t("plan.freeOnline")],
+      cta: t("plan.startFree"), highlight: false,
+    },
+    {
       name: t("plan.small"), price: "9,900", period: "/mwezi", desc: t("plan.smallDesc"),
       features: [t("plan.shop1"), t("plan.products50"), t("plan.onlineShop"), t("plan.basicReports")],
       cta: t("plan.startSmall"), highlight: false,
@@ -195,7 +200,7 @@ export default function Landing() {
             <h2 className="text-3xl font-bold text-foreground sm:text-4xl">{t("landing.pricingTitle")}</h2>
             <p className="mt-4 text-lg text-muted-foreground">{t("landing.pricingDesc")}</p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             {plans.map((p) => (
               <div key={p.name} className={`stat-card flex flex-col ${p.highlight ? "ring-2 ring-primary relative" : ""}`}>
                 {p.highlight && (

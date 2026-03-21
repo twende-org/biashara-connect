@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import {
   LayoutDashboard, Package, ShoppingCart, Store, BarChart3, Truck, Users,
-  LogOut, Menu, X, Bell, ChevronDown, ShieldAlert,
+  LogOut, Menu, X, Bell, ChevronDown, ShieldAlert, Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -13,6 +13,7 @@ import { roleNavAccess } from "@/lib/permissions";
 import { useI18n } from "@/lib/i18n";
 import LanguageToggle from "@/components/LanguageToggle";
 import type { AppRole } from "@/types";
+import { isSystemAdmin } from "@/lib/subscription";
 
 interface AppLayoutProps {
   children?: React.ReactNode;
@@ -29,6 +30,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user?.id) isSystemAdmin(user.id).then(setIsAdmin);
+  }, [user?.id]);
 
   const allNavItems = useMemo(() => [
     { label: t("nav.dashboard"), icon: LayoutDashboard, path: "/app" },
@@ -118,6 +124,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
             );
           })}
         </nav>
+
+        {isAdmin && (
+          <div className="px-3 mb-2">
+            <Link to="/admin" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors">
+              <Shield className="h-5 w-5" />Admin Panel
+            </Link>
+          </div>
+        )}
 
         <div className="border-t border-sidebar-border p-3">
           {role && (
