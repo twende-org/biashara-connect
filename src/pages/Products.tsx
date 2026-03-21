@@ -158,7 +158,9 @@ export default function Products() {
           <h1 className="page-title">{t("products.title")}</h1>
           <p className="page-description">{t("products.subtitle")}</p>
         </div>
-        {permissions.canAddProduct && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <WhatsAppLowStockAlert products={products} shopName={currentShop?.name || "Duka"} />
+          {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-2" />{t("products.add")}</Button>
