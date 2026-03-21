@@ -73,7 +73,7 @@ export default function AdminPayments() {
         startDate: now.toISOString().split("T")[0],
         endDate: end.toISOString().split("T")[0],
         amount: PLAN_LIMITS[selectedPlan].price,
-        id: selectedUserId,
+        // id is auto-set by createSubscription using userId as doc id
       });
       toast.success(`${user.email} → ${selectedPlan}`);
       setDialogOpen(false);
