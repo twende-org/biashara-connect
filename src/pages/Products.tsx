@@ -38,6 +38,8 @@ const categories = [
 export default function Products() {
   const dispatch = useAppDispatch();
   const currentShopId = useAppSelector((s) => s.shops.currentShopId);
+  const shops = useAppSelector((s) => s.shops.shops);
+  const currentShop = shops.find(s => s.id === currentShopId);
   const { permissions } = useUserRole();
   const { log: logActivity } = useActivityLogger();
   const { products, loading } = useAppSelector((s) => s.products);
