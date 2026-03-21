@@ -14,7 +14,6 @@ import { useI18n } from "@/lib/i18n";
 import LanguageToggle from "@/components/LanguageToggle";
 import type { AppRole } from "@/types";
 import { isSystemAdmin } from "@/lib/subscription";
-import type { AppRole } from "@/types";
 
 interface AppLayoutProps {
   children?: React.ReactNode;
