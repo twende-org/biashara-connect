@@ -31,6 +31,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user?.id) isSystemAdmin(user.id).then(setIsAdmin);
+  }, [user?.id]);
 
   const allNavItems = useMemo(() => [
     { label: t("nav.dashboard"), icon: LayoutDashboard, path: "/app" },
