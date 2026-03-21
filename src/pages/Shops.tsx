@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2, Store, Loader2, MapPin, Phone } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Store, Loader2, MapPin, Phone, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +13,7 @@ import { assignUserRole } from "@/lib/firestore";
 import { toast } from "sonner";
 import ShopMap from "@/components/ShopMap";
 import { useI18n } from "@/lib/i18n";
+import { useSubscription } from "@/hooks/useSubscription";
 
 async function geocode(query: string): Promise<{ lat: number; lon: number } | null> {
   try {
