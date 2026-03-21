@@ -165,7 +165,7 @@ export default function Products() {
           {permissions.canAddProduct && (
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingProduct(null); resetForm(); setProgress(0); } }}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" />{t("products.add")}</Button>
+            <Button disabled={!canAddProduct && !editingProduct}><Plus className="h-4 w-4 mr-2" />{t("products.add")}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
