@@ -33,6 +33,7 @@ export default function Shops() {
   const { shops, loading } = useAppSelector((s) => s.shops);
   const { t } = useI18n();
   const { canAddShop, plan, limits, shopCount } = useSubscription();
+  const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<any>(null);
   const [form, setForm] = useState({ name: "", location: "", phone: "", description: "" });
