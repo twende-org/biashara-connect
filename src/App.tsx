@@ -39,6 +39,12 @@ const Suppliers = lazy(() => import("@/pages/Suppliers"));
 const UserManagement = lazy(() => import("@/pages/UserManagement"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
+// Admin pages (lazy)
+const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
+const AdminPayments = lazy(() => import("@/pages/admin/AdminPayments"));
+
 const LoadingFallback = () => (
   <div className="flex min-h-screen items-center justify-center bg-background">
     <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
