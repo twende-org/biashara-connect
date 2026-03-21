@@ -20,6 +20,7 @@ import type { Product } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { useI18n } from "@/lib/i18n";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const defaultForm = {
   name: "", category: "", buyingPrice: 0, sellingPrice: 0, stock: 0, minStock: 0,

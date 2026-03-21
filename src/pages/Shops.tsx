@@ -120,6 +120,16 @@ export default function Shops() {
         </Dialog>
       </div>
 
+      {!canAddShop && (
+        <div className="flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/5 p-4 mb-6">
+          <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-foreground">{t("subscription.shopLimit")}</p>
+            <p className="text-xs text-muted-foreground">{t("subscription.currentPlan")}: <span className="font-semibold capitalize">{plan}</span> ({shopCount}/{limits.maxShops}). {t("subscription.upgradeDesc")}</p>
+          </div>
+        </div>
+      )}
+
       <div className="relative mb-6 max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input placeholder={t("shops.searchPlaceholder")} className="pl-10" value={search} onChange={(e) => setSearch(e.target.value)} />
