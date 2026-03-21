@@ -85,7 +85,7 @@ export default function Shops() {
         </div>
         <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditingShop(null); setForm({ name: "", location: "", phone: "", description: "" }); setProgress(0); } }}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" />{t("shops.add")}</Button>
+            <Button disabled={!canAddShop}><Plus className="h-4 w-4 mr-2" />{t("shops.add")}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editingShop ? t("shops.editTitle") : t("shops.addTitle")}</DialogTitle></DialogHeader>

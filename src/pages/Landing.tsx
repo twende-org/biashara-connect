@@ -41,6 +41,11 @@ export default function Landing() {
 
   const plans = [
     {
+      name: t("plan.free"), price: "0", period: "", desc: t("plan.freeDesc"),
+      features: [t("plan.freeShop"), t("plan.freeProducts"), t("plan.freeOnline")],
+      cta: t("plan.startFree"), highlight: false,
+    },
+    {
       name: t("plan.small"), price: "9,900", period: "/mwezi", desc: t("plan.smallDesc"),
       features: [t("plan.shop1"), t("plan.products50"), t("plan.onlineShop"), t("plan.basicReports")],
       cta: t("plan.startSmall"), highlight: false,
