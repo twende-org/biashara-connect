@@ -103,6 +103,20 @@ const App = () => (
                 }
               />
 
+              {/* Admin routes */}
+              <Route
+                path="/admin"
+                element={
+                  <AuthGuard fallback={<Navigate to="/login" replace />}>
+                    <AdminLayout />
+                  </AuthGuard>
+                }
+              >
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="payments" element={<AdminPayments />} />
+              </Route>
+
               {/* Catch-all fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
