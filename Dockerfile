@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN rm -rf node_modules package-lock.json
 
 # Install dependencies ignoring peer conflicts
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
