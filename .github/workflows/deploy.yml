@@ -28,7 +28,7 @@ jobs:
           echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> .env
           echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> .env
 
-      - name: Install dependencies (clean)
+      - name: Install dependencies with legacy-peer-deps
         run: |
           rm -rf node_modules package-lock.json
           npm install --legacy-peer-deps
