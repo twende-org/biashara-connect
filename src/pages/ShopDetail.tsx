@@ -107,13 +107,67 @@ export default function ShopDetail() {
     );
   }
 
+  // JSON-LD: LocalBusiness for this specific shop
+  const shopJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: shop.name,
+    description: shop.description || `Duka la ${shop.name} - bidhaa bora kwa bei nzuri`,
+    url: `https://duka.twendedigital.tech/maduka/${shop.id}`,
+    ...(shop.phone && { telephone: shop.phone }),
+    ...(shop.location && {
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: shop.location,
+        addressCountry: "TZ",
+      },
+    }),
+    ...(shop.lat && shop.lon && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: shop.lat,
+        longitude: shop.lon,
+      },
+    }),
+    ...(products.length > 0 && {
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: `Bidhaa za ${shop.name}`,
+        itemListElement: products.slice(0, 20).map((p) => ({
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Product",
+            name: p.name,
+            ...(p.description && { description: p.description }),
+            ...(p.brand && { brand: { "@type": "Brand", name: p.brand } }),
+            ...(p.imageUrl && { image: p.imageUrl }),
+            offers: {
+              "@type": "Offer",
+              price: p.sellingPrice,
+              priceCurrency: "TZS",
+              availability: p.stock > 0
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            },
+          },
+        })),
+      },
+    }),
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title={`${shop.name} — Bidhaa na Bei | DukaSmart`}
-        description={`Tazama bidhaa za ${shop.name} ${shop.location ? "- " + shop.location : ""}. Bei bora na bidhaa bora kwenye DukaSmart.`}
-        keywords={`${shop.name}, bidhaa, bei, duka, ${shop.location || ""}`}
+        description={`Tazama bidhaa ${products.length} za ${shop.name}${shop.location ? " - " + shop.location : ""}. Bei bora na bidhaa bora kwenye DukaSmart Tanzania.`}
+        keywords={`${shop.name}, bidhaa, bei, duka, ${shop.location || ""}, maduka, ${categories.join(", ")}`}
         canonical={`/maduka/${shop.id}`}
+        jsonLd={shopJsonLd}
+        breadcrumbs={[
+          { name: "Nyumbani", url: "/" },
+          { name: "Maduka", url: "/maduka" },
+          { name: shop.name, url: `/maduka/${shop.id}` },
+        ]}
       />
 
       {/* Navbar */}
@@ -292,7 +346,8 @@ export default function ShopDetail() {
                   {product.imageUrl ? (
                     <img
                       src={product.imageUrl}
-                      alt={product.name}
+                      alt={`${product.name} - ${product.category} - TZS ${product.sellingPrice.toLocaleString()} kwenye ${shop.name}`}
+                      loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                   ) : (

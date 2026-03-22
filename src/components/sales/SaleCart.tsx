@@ -9,6 +9,7 @@ import {
 import { formatTZS } from "@/data/mockData";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { useI18n } from "@/lib/i18n";
 
 export interface CartItem {
   product: Product;
@@ -32,6 +33,7 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const { t } = useI18n();
 
   const activeProducts = products.filter(p => (p.status || "active") === "active");
   const cartTotal = cart.reduce((sum, item) => sum + item.lineTotal, 0);
@@ -40,18 +42,14 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
     if (!addProductId) return;
     const product = products.find(p => p.id === addProductId);
     if (!product) return;
-
     const existingIdx = cart.findIndex(c => c.product.id === addProductId);
     const currentCartQty = existingIdx >= 0 ? cart[existingIdx].quantity : 0;
-
     if (currentCartQty + addQty > product.stock) {
-      toast.error(`Stoo haitoshi! Stoo iliyobaki: ${product.stock - currentCartQty}`);
+      toast.error(`${t("sales.stockInsufficient")} ${t("sales.remaining")}: ${product.stock - currentCartQty}`);
       return;
     }
-
     const discount = product.discount || 0;
     const unitPrice = product.sellingPrice * (1 - discount / 100);
-
     if (existingIdx >= 0) {
       const updated = [...cart];
       const newQty = updated[existingIdx].quantity + addQty;
@@ -60,8 +58,7 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
     } else {
       setCart([...cart, { product, quantity: addQty, lineTotal: Math.round(unitPrice * addQty) }]);
     }
-    setAddProductId("");
-    setAddQty(1);
+    setAddProductId(""); setAddQty(1);
   };
 
   const removeFromCart = (idx: number) => setCart(cart.filter((_, i) => i !== idx));
@@ -69,10 +66,7 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
   const updateCartQty = (idx: number, newQty: number) => {
     if (newQty < 1) return;
     const item = cart[idx];
-    if (newQty > item.product.stock) {
-      toast.error(`Stoo haitoshi! Max: ${item.product.stock}`);
-      return;
-    }
+    if (newQty > item.product.stock) { toast.error(`${t("sales.stockInsufficient")} Max: ${item.product.stock}`); return; }
     const discount = item.product.discount || 0;
     const unitPrice = item.product.sellingPrice * (1 - discount / 100);
     const updated = [...cart];
@@ -80,28 +74,16 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
     setCart(updated);
   };
 
-  const resetForm = () => {
-    setCart([]);
-    setAddProductId("");
-    setAddQty(1);
-    setPaymentMethod("Taslimu");
-    setCustomerName("");
-    setCustomerPhone("");
-    setNotes("");
-    setProgress(0);
-  };
+  const resetForm = () => { setCart([]); setAddProductId(""); setAddQty(1); setPaymentMethod("Taslimu"); setCustomerName(""); setCustomerPhone(""); setNotes(""); setProgress(0); };
 
   const handleSubmit = async (asDraft: boolean) => {
     if (cart.length === 0) return;
-    setSubmitting(true);
-    setProgress(30);
+    setSubmitting(true); setProgress(30);
     try {
       await onSubmit(cart, paymentMethod, customerName, customerPhone, notes, asDraft);
       setProgress(100);
       setTimeout(() => resetForm(), 300);
-    } catch (err: any) {
-      toast.error(err?.message || "Imeshindikana kurekodi mauzo");
-    }
+    } catch (err: any) { toast.error(err?.message || t("sales.failedRecord")); }
     setSubmitting(false);
   };
 
@@ -109,39 +91,37 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
     <div className="space-y-4">
       {submitting && <Progress value={progress} className="h-1.5" />}
 
-      {/* Add product to cart */}
       <div className="flex flex-wrap items-end gap-2">
         <div className="flex-1 min-w-[180px]">
-          <label className="text-sm font-medium text-foreground mb-1.5 block">Bidhaa</label>
+          <label className="text-sm font-medium text-foreground mb-1.5 block">{t("sales.product")}</label>
           <Select value={addProductId} onValueChange={setAddProductId}>
-            <SelectTrigger><SelectValue placeholder="Chagua bidhaa..." /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder={t("sales.selectProduct")} /></SelectTrigger>
             <SelectContent>
               {activeProducts.map((p) => (
-                <SelectItem key={p.id} value={p.id}>{p.name} — Stoo: {p.stock}</SelectItem>
+                <SelectItem key={p.id} value={p.id}>{p.name} — {t("products.stock")}: {p.stock}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div className="w-20">
-          <label className="text-sm font-medium text-foreground mb-1.5 block">Idadi</label>
+          <label className="text-sm font-medium text-foreground mb-1.5 block">{t("sales.quantity")}</label>
           <Input type="number" min={1} value={addQty} onChange={(e) => setAddQty(Math.max(1, +e.target.value))} />
         </div>
         <Button type="button" onClick={addToCart} variant="secondary">
-          <Plus className="h-4 w-4 mr-1" />Ongeza
+          <Plus className="h-4 w-4 mr-1" />{t("sales.addToCart")}
         </Button>
       </div>
 
-      {/* Cart Table */}
       {cart.length > 0 && (
         <div className="rounded-lg border overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted text-left text-muted-foreground">
                 <th className="px-3 py-2.5 font-medium">#</th>
-                <th className="px-3 py-2.5 font-medium">Bidhaa</th>
-                <th className="px-3 py-2.5 font-medium text-right">Bei</th>
-                <th className="px-3 py-2.5 font-medium text-center">Idadi</th>
-                <th className="px-3 py-2.5 font-medium text-right">Jumla</th>
+                <th className="px-3 py-2.5 font-medium">{t("sales.product")}</th>
+                <th className="px-3 py-2.5 font-medium text-right">{t("sales.price")}</th>
+                <th className="px-3 py-2.5 font-medium text-center">{t("sales.quantity")}</th>
+                <th className="px-3 py-2.5 font-medium text-right">{t("sales.total")}</th>
                 <th className="px-3 py-2.5 font-medium w-10"></th>
               </tr>
             </thead>
@@ -174,7 +154,7 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
             </tbody>
             <tfoot>
               <tr className="border-t bg-muted/50">
-                <td colSpan={4} className="px-3 py-3 text-right font-bold text-foreground">JUMLA:</td>
+                <td colSpan={4} className="px-3 py-3 text-right font-bold text-foreground">{t("sales.grandTotal")}:</td>
                 <td className="px-3 py-3 text-right text-lg font-extrabold text-primary">{formatTZS(cartTotal)}</td>
                 <td></td>
               </tr>
@@ -183,11 +163,10 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
         </div>
       )}
 
-      {/* Payment & Customer Info */}
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Njia ya Malipo *</label>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">{t("sales.paymentMethod")} *</label>
             <Select value={paymentMethod} onValueChange={setPaymentMethod}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -201,26 +180,26 @@ export default function SaleCart({ products, onSubmit, canSaveDraft }: Props) {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Jina la Mteja</label>
-            <Input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Si lazima" />
+            <label className="text-sm font-medium text-foreground mb-1.5 block">{t("sales.customerName")}</label>
+            <Input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder={t("sales.optional")} />
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Simu</label>
-            <Input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Si lazima" />
+            <label className="text-sm font-medium text-foreground mb-1.5 block">{t("sales.customerPhone")}</label>
+            <Input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder={t("sales.optional")} />
           </div>
         </div>
         <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">Maelezo</label>
-          <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Si lazima" />
+          <label className="text-sm font-medium text-foreground mb-1.5 block">{t("sales.notes")}</label>
+          <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t("sales.optional")} />
         </div>
 
         <div className="flex gap-2">
           <Button onClick={() => handleSubmit(false)} className="flex-1" size="lg" disabled={cart.length === 0 || submitting}>
-            {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Inaendelea...</> : `Rekodi Mauzo — ${formatTZS(cartTotal)}`}
+            {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("common.loading")}</> : `${t("sales.recordSale")} — ${formatTZS(cartTotal)}`}
           </Button>
           {canSaveDraft && (
             <Button onClick={() => handleSubmit(true)} variant="outline" size="lg" disabled={cart.length === 0 || submitting}>
-              Hifadhi Draft
+              {t("sales.saveDraft")}
             </Button>
           )}
         </div>

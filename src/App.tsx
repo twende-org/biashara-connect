@@ -6,11 +6,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { lazy, Suspense } from "react";
+import { I18nProvider } from "@/lib/i18n";
 
 import AuthGuard from "@/components/AuthGuard";
 import AppLayout from "@/components/layout/AppLayout";
 import RoleGuard from "@/components/RoleGuard";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 // Public pages
 import Landing from "@/pages/Landing";
@@ -37,6 +39,12 @@ const Suppliers = lazy(() => import("@/pages/Suppliers"));
 const UserManagement = lazy(() => import("@/pages/UserManagement"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
+// Admin pages (lazy)
+const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
+const AdminPayments = lazy(() => import("@/pages/admin/AdminPayments"));
+
 const LoadingFallback = () => (
   <div className="flex min-h-screen items-center justify-center bg-background">
     <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -61,10 +69,12 @@ const ProtectedRoutes = () => (
 const App = () => (
   <HelmetProvider>
     <Provider store={store}>
+      <I18nProvider>
       <TooltipProvider>
         <OrganizationSchema />
         <Toaster />
         <Sonner />
+        <PWAInstallPrompt />
         <BrowserRouter>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
@@ -93,12 +103,27 @@ const App = () => (
                 }
               />
 
+              {/* Admin routes */}
+              <Route
+                path="/admin"
+                element={
+                  <AuthGuard fallback={<Navigate to="/login" replace />}>
+                    <AdminLayout />
+                  </AuthGuard>
+                }
+              >
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="payments" element={<AdminPayments />} />
+              </Route>
+
               {/* Catch-all fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
       </TooltipProvider>
+      </I18nProvider>
     </Provider>
   </HelmetProvider>
 );
