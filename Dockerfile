@@ -9,8 +9,8 @@ COPY package*.json ./
 # Clean install: remove old node_modules and package-lock if they exist
 RUN rm -rf node_modules package-lock.json
 
-# Install dependencies ignoring peer conflicts
-RUN npm install --legacy-peer-deps
+# Use npm ci with legacy-peer-deps to ignore peer conflicts
+RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
